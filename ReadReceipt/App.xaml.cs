@@ -12,7 +12,6 @@ namespace ReadReceipt
         {
             InitializeComponent();
             DependencyService.Register<MockDataStore>();
-
             CrossMedia.Current.Initialize();
             MainPage = new MainPage();
         }

@@ -27,6 +27,13 @@ namespace ReadReceipt.ViewModels
                 Items.Add(newItem);
                 await DataStore.AddItemAsync(newItem);
             });
+
+            MessagingCenter.Subscribe<CameraPage, Item>(this, "AddItem", async (obj, item) =>
+            {
+                var newItem = item as Item;
+                Items.Add(newItem);
+                await DataStore.AddItemAsync(newItem);
+            });
         }
 
         async Task ExecuteLoadItemsCommand()
