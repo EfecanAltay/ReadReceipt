@@ -153,8 +153,6 @@ namespace ReadReceipt.Views
                             if (borderRect.Right > ReceiptPaperBorder.Right)
                                 ReceiptPaperBorder.Right = borderRect.Right;
 
-                            //if (borderRect.Y < ReceiptPaperBorder.Y)
-                            //    ReceiptPaperBorder.Y = borderRect.Y;
                             var stext = text.Trim().ToLower();
                             if (stext.Contains("saat"))
                             {

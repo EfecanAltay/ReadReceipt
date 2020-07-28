@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Threading.Tasks;
-
+﻿using System.Collections.ObjectModel;
 using Xamarin.Forms;
-
 using ReadReceipt.Models;
 using ReadReceipt.Views;
 
@@ -12,21 +7,19 @@ namespace ReadReceipt.ViewModels
 {
     public class ItemsViewModel : BaseViewModel
     {
-        public ObservableCollection<ReceiptItem> Items { get; set; }
-        public Command LoadItemsCommand { get; set; }
+        private ObservableCollection<ReceiptItem> items;
+        public ObservableCollection<ReceiptItem> Items
+        {
+            get { return items; }
+            set { items = value;
+                OnPropertyChanged(nameof(Items));
+            }
+        }
 
         public ItemsViewModel()
         {
-            Title = "Browse";
+            Title = "Fatura Listesi";
             Items = new ObservableCollection<ReceiptItem>();
-            LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
-
-            MessagingCenter.Subscribe<NewItemPage, ReceiptItem>(this, "AddItem", async (obj, item) =>
-            {
-                var newItem = item as ReceiptItem;
-                Items.Add(newItem);
-                await DataStore.AddItemAsync(newItem);
-            });
 
             MessagingCenter.Subscribe<CameraPage, ReceiptItem>(this, "AddItem", async (obj, item) =>
             {
@@ -34,29 +27,6 @@ namespace ReadReceipt.ViewModels
                 Items.Add(newItem);
                 await DataStore.AddItemAsync(newItem);
             });
-        }
-
-        async Task ExecuteLoadItemsCommand()
-        {
-            IsBusy = true;
-
-            try
-            {
-                Items.Clear();
-                var items = await DataStore.GetItemsAsync(true);
-                foreach (var item in items)
-                {
-                    Items.Add(item);
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-            }
-            finally
-            {
-                IsBusy = false;
-            }
         }
     }
 }

@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
-
 using ReadReceipt.Models;
-using ReadReceipt.Views;
 using ReadReceipt.ViewModels;
 
 namespace ReadReceipt.Views
@@ -23,7 +16,6 @@ namespace ReadReceipt.Views
         public ItemsPage()
         {
             InitializeComponent();
-
             BindingContext = viewModel = new ItemsViewModel();
         }
 
@@ -31,20 +23,17 @@ namespace ReadReceipt.Views
         {
             var layout = (BindableObject)sender;
             var item = (ReceiptItem)layout.BindingContext;
-            await Navigation.PushAsync(new ItemDetailPage(new ItemDetailViewModel(item)));
+            await Navigation.PushAsync(new ItemDetailPage(new ItemDetailViewModel(item, viewModel)));
         }
 
         async void AddItem_Clicked(object sender, EventArgs e)
         {
-            await Navigation.PushModalAsync(new NavigationPage(new NewItemPage()));
+            //await Navigation.PushModalAsync(new NavigationPage(new NewItemPage()));
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
-
-            if (viewModel.Items.Count == 0)
-                viewModel.IsBusy = true;
         }
     }
 }

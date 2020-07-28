@@ -22,5 +22,20 @@ namespace ReadReceipt.Views
         {
 
         }
+
+        private async void ToolbarDeleteItem_Clicked(object sender, System.EventArgs e)
+        {
+            var result = await Application.Current.MainPage.DisplayAlert("Fatura Silinecektir.", "Devam etmek ister misiniz ?", "Evet", "Hayır");
+            if (result)
+            {
+                viewModel.DeleteItemCommand.Execute(null);
+                Navigation.PopAsync();
+            }
+        }
+
+        private void ToolbarSendItem_Clicked(object sender, System.EventArgs e)
+        {
+
+        }
     }
 }

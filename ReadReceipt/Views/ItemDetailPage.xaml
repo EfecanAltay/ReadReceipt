@@ -5,12 +5,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              Padding="5"
+             x:Name="ItemDetailPageKey"
              x:Class="ReadReceipt.Views.ItemDetailPage"
              Title="{Binding Title}">
-    <StackLayout Spacing="20" >
-        <Label Text="Text:" FontSize="Medium" />
-        <Label Text="{Binding Item.Text}" d:Text="Item name" FontSize="Small"/>
-        <Label Text="Alınanlar :" FontSize="Medium" />
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Sil" Clicked="ToolbarDeleteItem_Clicked" />
+        <ToolbarItem Text="Gönder" Clicked="ToolbarSendItem_Clicked" />
+    </ContentPage.ToolbarItems>
+    <StackLayout Spacing="20" Padding="10" >
+        <Label Text="Fiş Adı :" FontSize="Medium" TextColor="PaleVioletRed" FontAttributes="Bold" />
+        <Editor BackgroundColor="Gray" Unfocused="Editor_Focused" Grid.Column="1" Text="{Binding Item.Text}" HorizontalOptions="FillAndExpand" AutoSize="TextChanges" />
+        <Label Text="Alınanlar :" FontSize="Medium" TextColor="PaleVioletRed" FontAttributes="Bold"  />
         <ListView ItemsSource="{Binding Item.PairingItems}" SelectionMode="None" HasUnevenRows="True">
             <ListView.ItemTemplate>
                 <DataTemplate>
@@ -24,7 +29,7 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"></RowDefinition>
                             </Grid.RowDefinitions>
-                            <Button Grid.Column="0" Text="X" TextColor="Red" />
+                            <Button Grid.Column="0" Text="X" TextColor="Red" Command="{Binding Source={x:Reference ItemDetailPageKey},Path='BindingContext.Item.RemoveItem' }" CommandParameter="{Binding .}" />
                             <Editor Unfocused="Editor_Focused" Grid.Row="0" Grid.Column="1" Text="{Binding Key}" HorizontalOptions="FillAndExpand" AutoSize="TextChanges" />
                             <Editor Unfocused="Editor_Focused"  Grid.Column="2" Text="{Binding Value}"  HorizontalOptions="FillAndExpand" AutoSize="TextChanges"/>
                         </Grid>
