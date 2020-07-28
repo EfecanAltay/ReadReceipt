@@ -2,15 +2,15 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:forms="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
              mc:Ignorable="d"
              NavigationPage.HasNavigationBar="False"
              x:Class="ReadReceipt.Views.CameraPage">
     <ContentPage.Content>
         <StackLayout BackgroundColor="Black" >
-            <Image x:Name="cameraStream" VerticalOptions="FillAndExpand"></Image>
+            <forms:SKCanvasView x:Name="camCanvas" VerticalOptions="FillAndExpand"></forms:SKCanvasView>
             <Button Text="Faturayı Çek" Clicked="Take_Receipt_Clicked" VerticalOptions="End"></Button>
-            <Button Text="Faturayı Oku" Clicked="Read_Receipt_Clicked" VerticalOptions="End"></Button>
+            <Button Text="Detayı Göster" VerticalOptions="End"></Button>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

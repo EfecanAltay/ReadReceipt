@@ -12,25 +12,25 @@ namespace ReadReceipt.ViewModels
 {
     public class ItemsViewModel : BaseViewModel
     {
-        public ObservableCollection<Item> Items { get; set; }
+        public ObservableCollection<ReceiptItem> Items { get; set; }
         public Command LoadItemsCommand { get; set; }
 
         public ItemsViewModel()
         {
             Title = "Browse";
-            Items = new ObservableCollection<Item>();
+            Items = new ObservableCollection<ReceiptItem>();
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
 
-            MessagingCenter.Subscribe<NewItemPage, Item>(this, "AddItem", async (obj, item) =>
+            MessagingCenter.Subscribe<NewItemPage, ReceiptItem>(this, "AddItem", async (obj, item) =>
             {
-                var newItem = item as Item;
+                var newItem = item as ReceiptItem;
                 Items.Add(newItem);
                 await DataStore.AddItemAsync(newItem);
             });
 
-            MessagingCenter.Subscribe<CameraPage, Item>(this, "AddItem", async (obj, item) =>
+            MessagingCenter.Subscribe<CameraPage, ReceiptItem>(this, "AddItem", async (obj, item) =>
             {
-                var newItem = item as Item;
+                var newItem = item as ReceiptItem;
                 Items.Add(newItem);
                 await DataStore.AddItemAsync(newItem);
             });

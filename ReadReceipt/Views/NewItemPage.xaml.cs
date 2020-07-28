@@ -13,16 +13,15 @@ namespace ReadReceipt.Views
     [DesignTimeVisible(false)]
     public partial class NewItemPage : ContentPage
     {
-        public Item Item { get; set; }
+        public ReceiptItem Item { get; set; }
 
         public NewItemPage()
         {
             InitializeComponent();
 
-            Item = new Item
+            Item = new ReceiptItem
             {
-                Text = "Item name",
-                Description = "This is an item description."
+                Text = "Item name"
             };
 
             BindingContext = this;

@@ -4,14 +4,33 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
+             Padding="5"
              x:Class="ReadReceipt.Views.ItemDetailPage"
              Title="{Binding Title}">
-    <ScrollView Padding="15">
-        <StackLayout Spacing="20" >
-            <Label Text="Text:" FontSize="Medium" />
-            <Label Text="{Binding Item.Text}" d:Text="Item name" FontSize="Small"/>
-            <Label Text="Description:" FontSize="Medium" />
-            <Label Text="{Binding Item.Description}" d:Text="Item description" FontSize="Small"/>
-        </StackLayout>
-    </ScrollView>
+    <StackLayout Spacing="20" >
+        <Label Text="Text:" FontSize="Medium" />
+        <Label Text="{Binding Item.Text}" d:Text="Item name" FontSize="Small"/>
+        <Label Text="Alınanlar :" FontSize="Medium" />
+        <ListView ItemsSource="{Binding Item.PairingItems}" SelectionMode="None" HasUnevenRows="True">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid BackgroundColor="Gray" VerticalOptions="Fill">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*"></ColumnDefinition>
+                                <ColumnDefinition Width="2*"></ColumnDefinition>
+                                <ColumnDefinition Width="2*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Button Grid.Column="0" Text="X" TextColor="Red" />
+                            <Editor Unfocused="Editor_Focused" Grid.Row="0" Grid.Column="1" Text="{Binding Key}" HorizontalOptions="FillAndExpand" AutoSize="TextChanges" />
+                            <Editor Unfocused="Editor_Focused"  Grid.Column="2" Text="{Binding Value}"  HorizontalOptions="FillAndExpand" AutoSize="TextChanges"/>
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackLayout>
 </ContentPage>

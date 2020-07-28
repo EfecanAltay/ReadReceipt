@@ -5,6 +5,7 @@ using ReadReceipt.Droid.DependencyService;
 using Android.Util;
 using System;
 using System.Collections.Generic;
+using ReadReceipt.Models;
 
 [assembly: Dependency(typeof(TextRecognizerDS))]
 namespace ReadReceipt.Droid.DependencyService
@@ -18,7 +19,7 @@ namespace ReadReceipt.Droid.DependencyService
             textRecognizer = new TextRecognizer.Builder(Android.App.Application.Context).Build();
         }
 
-        public void Read(byte[] data, Action<IEnumerable<string>> readingTexts)
+        public void Read(byte[] data, Action<IEnumerable<ImageTextBlock>> readingTexts)
         {
             if(textRecognizer != null)
             {
@@ -27,7 +28,6 @@ namespace ReadReceipt.Droid.DependencyService
                     Log.Error("TextRecognizer", "Detector dependencies are not yet available !");
                 }
                 var textProcessor = new TextRecognationProcessor();
-            
                 textProcessor.DetectedTextAction = (texts) => {
                     readingTexts?.Invoke(texts);
                 };
