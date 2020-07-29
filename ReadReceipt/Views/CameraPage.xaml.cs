@@ -6,10 +6,8 @@ using SkiaSharp;
 using SkiaSharp.Views.Forms;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
@@ -55,10 +53,11 @@ namespace ReadReceipt.Views
                 var scaleRatioW = (float)info.Width / (float)skCameraImage.Width;
                 var scaleRatioH = (float)info.Height / (float)skCameraImage.Height;
 
+                #region Paint Palets
                 SKPaint paint = new SKPaint
                 {
                     Style = SKPaintStyle.Stroke,
-                    Color = Color.Red.ToSKColor(),
+                    Color = Color.Red.ToSKColor().WithAlpha(100),
                     StrokeWidth = 2
                 };
 
@@ -89,8 +88,9 @@ namespace ReadReceipt.Views
                     Color = Color.Purple.ToSKColor(),
                     StrokeWidth = 4
                 };
+                #endregion
 
-                CalculateTextRects(scaleRatioW, scaleRatioH);
+                CalculateTextRects(scaleRatioW, scaleRatioH ,canvas,paint);
 
                 canvas.DrawRect((float)ReceiptPaperBorder.X, (float)ReceiptPaperBorder.Y, (float)ReceiptPaperBorder.Width, (float)ReceiptPaperBorder.Height, paint_green);
 
@@ -107,7 +107,7 @@ namespace ReadReceipt.Views
             }
         }
 
-        private void CalculateTextRects(float scaleRatioW, float scaleRatioH)
+        private void CalculateTextRects(float scaleRatioW, float scaleRatioH , SKCanvas canvas , SKPaint wordPaint)
         {
             ReceiptPaperBorder = new Rectangle();
             ReceiptPaperBorder.Width = -1;
@@ -132,7 +132,7 @@ namespace ReadReceipt.Views
                         ReceiptTitleBorder = rect;
                         ReceiptTitle = textBlock.Text;
                     }
-                    //canvas.DrawRect((float)rect.X * scaleRatioW, (float)rect.Y * scaleRatioH, (float)rect.Width * scaleRatioW, (float)rect.Height * scaleRatioH, paint);
+                    canvas.DrawRect((float)rect.X * scaleRatioW, (float)rect.Y * scaleRatioH, (float)rect.Width * scaleRatioW, (float)rect.Height * scaleRatioH, wordPaint);
                     var words = textBlock.Text.Split('\n');
                     var devide = (float)((rect.Height * scaleRatioH) / words.Length);
                     for (int i = 0; i < words.Length; i++)
@@ -271,6 +271,8 @@ namespace ReadReceipt.Views
                 {
                     textBlockList = texts;
                 });
+                //var ods = DependencyService.Get<IObjectDetection>();
+                //ods.DetectObject(data);
             }
         }
 
@@ -285,19 +287,9 @@ namespace ReadReceipt.Views
                     Value = kvp.Value.Text
                 });
             });
-            StringBuilder stringBuilder = new StringBuilder();
-            foreach (var text in textBlockList)
-            {
-                stringBuilder.Append(text.Text);
-                stringBuilder.Append("\n");
-            }
-            var str = stringBuilder.ToString();
-
-            MessagingCenter.Send(this, "AddItem", new ReceiptItem()
-            {
-                Text = ReceiptTitle,
-                PairingItems = new ObservableCollection<PairingItem>(pairingItems)
-            });
+            ReceiptContent content = new ReceiptContent(pairingItems);
+            Receipt receipt = new Receipt(content);
+            MessagingCenter.Send(this, "AddItem", receipt);
         }
 
         public static byte[] ReadFully(Stream input)

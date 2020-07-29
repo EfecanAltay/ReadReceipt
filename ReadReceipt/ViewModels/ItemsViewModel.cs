@@ -7,8 +7,8 @@ namespace ReadReceipt.ViewModels
 {
     public class ItemsViewModel : BaseViewModel
     {
-        private ObservableCollection<ReceiptItem> items;
-        public ObservableCollection<ReceiptItem> Items
+        private ObservableCollection<Receipt> items;
+        public ObservableCollection<Receipt> Items
         {
             get { return items; }
             set { items = value;
@@ -19,11 +19,11 @@ namespace ReadReceipt.ViewModels
         public ItemsViewModel()
         {
             Title = "Fatura Listesi";
-            Items = new ObservableCollection<ReceiptItem>();
+            Items = new ObservableCollection<Receipt>();
 
-            MessagingCenter.Subscribe<CameraPage, ReceiptItem>(this, "AddItem", async (obj, item) =>
+            MessagingCenter.Subscribe<CameraPage, Receipt>(this, "AddItem", async (obj, item) =>
             {
-                var newItem = item as ReceiptItem;
+                var newItem = item as Receipt;
                 Items.Add(newItem);
                 await DataStore.AddItemAsync(newItem);
             });

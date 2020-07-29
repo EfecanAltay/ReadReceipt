@@ -14,9 +14,9 @@
     </ContentPage.ToolbarItems>
     <StackLayout Spacing="20" Padding="10" >
         <Label Text="Fiş Adı :" FontSize="Medium" TextColor="PaleVioletRed" FontAttributes="Bold" />
-        <Editor BackgroundColor="Gray" Unfocused="Editor_Focused" Grid.Column="1" Text="{Binding Item.Text}" HorizontalOptions="FillAndExpand" AutoSize="TextChanges" />
+        <Editor BackgroundColor="Gray" Unfocused="Editor_Focused" Grid.Column="1" Text="{Binding Item.Description}" HorizontalOptions="FillAndExpand" AutoSize="TextChanges" />
         <Label Text="Alınanlar :" FontSize="Medium" TextColor="PaleVioletRed" FontAttributes="Bold"  />
-        <ListView ItemsSource="{Binding Item.PairingItems}" SelectionMode="None" HasUnevenRows="True">
+        <ListView ItemsSource="{Binding Item.Content.PairingItems}" SelectionMode="None" HasUnevenRows="True">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ReadReceipt.Models
+﻿namespace ReadReceipt.Models
 {
     public class PairingItem
     {

@@ -6,28 +6,28 @@ using ReadReceipt.Models;
 
 namespace ReadReceipt.Services
 {
-    public class MockDataStore : IDataStore<ReceiptItem>
+    public class MockDataStore : IDataStore<Receipt>
     {
-        readonly List<ReceiptItem> items;
+        readonly List<Receipt> items;
 
         public MockDataStore()
         {
-            items = new List<ReceiptItem>()
+            items = new List<Receipt>()
             {
          
             };
         }
 
-        public async Task<bool> AddItemAsync(ReceiptItem item)
+        public async Task<bool> AddItemAsync(Receipt item)
         {
             items.Add(item);
 
             return await Task.FromResult(true);
         }
 
-        public async Task<bool> UpdateItemAsync(ReceiptItem item)
+        public async Task<bool> UpdateItemAsync(Receipt item)
         {
-            var oldItem = items.Where((ReceiptItem arg) => arg.Id == item.Id).FirstOrDefault();
+            var oldItem = items.Where((Receipt arg) => arg.Id == item.Id).FirstOrDefault();
             items.Remove(oldItem);
             items.Add(item);
 
@@ -36,18 +36,18 @@ namespace ReadReceipt.Services
 
         public async Task<bool> DeleteItemAsync(string id)
         {
-            var oldItem = items.Where((ReceiptItem arg) => arg.Id == id).FirstOrDefault();
+            var oldItem = items.Where((Receipt arg) => arg.Id == id).FirstOrDefault();
             items.Remove(oldItem);
 
             return await Task.FromResult(true);
         }
 
-        public async Task<ReceiptItem> GetItemAsync(string id)
+        public async Task<Receipt> GetItemAsync(string id)
         {
             return await Task.FromResult(items.FirstOrDefault(s => s.Id == id));
         }
 
-        public async Task<IEnumerable<ReceiptItem>> GetItemsAsync(bool forceRefresh = false)
+        public async Task<IEnumerable<Receipt>> GetItemsAsync(bool forceRefresh = false)
         {
             return await Task.FromResult(items);
         }

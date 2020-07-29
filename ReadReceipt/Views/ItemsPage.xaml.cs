@@ -22,7 +22,7 @@ namespace ReadReceipt.Views
         async void OnItemSelected(object sender, EventArgs args)
         {
             var layout = (BindableObject)sender;
-            var item = (ReceiptItem)layout.BindingContext;
+            var item = (Receipt)layout.BindingContext;
             await Navigation.PushAsync(new ItemDetailPage(new ItemDetailViewModel(item, viewModel)));
         }
 

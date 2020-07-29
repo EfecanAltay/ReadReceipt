@@ -29,12 +29,12 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <StackLayout Padding="10">
-                        <Label Text="{Binding Text}" 
+                        <Label Text="{Binding Header.Title}" 
                                 d:Text="{Binding .}"
                                 LineBreakMode="NoWrap" 
                                 Style="{DynamicResource ListItemTextStyle}" 
                                 FontSize="16" />
-                        <Label Text="{Binding Description}" 
+                        <Label Text="{Binding Header.Description}" 
                                 d:Text="Item descripton"
                                 LineBreakMode="NoWrap"
                                 Style="{DynamicResource ListItemDetailTextStyle}"
