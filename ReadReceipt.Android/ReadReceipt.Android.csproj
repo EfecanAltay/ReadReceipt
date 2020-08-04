@@ -82,6 +82,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidNativeLibrary Include="libs\arm64-v8a\libopencv_java4.so" />
+    <AndroidNativeLibrary Include="libs\armeabi-v7a\libopencv_java4.so" />
+    <AndroidNativeLibrary Include="libs\x86\libopencv_java4.so" />
+    <AndroidNativeLibrary Include="libs\x86_64\libopencv_java4.so" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />
@@ -110,10 +114,15 @@
       <Project>{3B2ECF9F-FF23-4A6C-930F-F2137386C563}</Project>
       <Name>ReadReceipt</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Xamarin.Android.OpenCV\Xamarin.Android.OpenCV.csproj">
+      <Project>{b249e3ff-8b2d-4808-b71c-8c99f843e556}</Project>
+      <Name>Xamarin.Android.OpenCV</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\xml\file_paths.xml" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>

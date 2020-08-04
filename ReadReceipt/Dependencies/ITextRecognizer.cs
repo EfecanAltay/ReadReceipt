@@ -8,5 +8,6 @@ namespace ReadReceipt.Dependencies
     {
         void Init();
         void Read(byte[] data, Action<IEnumerable<ImageTextBlock>> callback);
+        byte[] OpenCv(byte[] imageByte);
     }
 }

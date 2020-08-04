@@ -90,7 +90,7 @@ namespace ReadReceipt.Views
                 };
                 #endregion
 
-                CalculateTextRects(scaleRatioW, scaleRatioH ,canvas,paint);
+                CalculateTextRects(scaleRatioW, scaleRatioH, canvas, paint);
 
                 canvas.DrawRect((float)ReceiptPaperBorder.X, (float)ReceiptPaperBorder.Y, (float)ReceiptPaperBorder.Width, (float)ReceiptPaperBorder.Height, paint_green);
 
@@ -107,7 +107,7 @@ namespace ReadReceipt.Views
             }
         }
 
-        private void CalculateTextRects(float scaleRatioW, float scaleRatioH , SKCanvas canvas , SKPaint wordPaint)
+        private void CalculateTextRects(float scaleRatioW, float scaleRatioH, SKCanvas canvas, SKPaint wordPaint)
         {
             ReceiptPaperBorder = new Rectangle();
             ReceiptPaperBorder.Width = -1;
@@ -240,9 +240,30 @@ namespace ReadReceipt.Views
                 await DisplayAlert("No Camera", ":( No camera avaialble.", "OK");
                 return;
             }
-            var photo = await Plugin.Media.CrossMedia.Current.TakePhotoAsync(new Plugin.Media.Abstractions.StoreCameraMediaOptions() { });
+            var photo = await Plugin.Media.CrossMedia.Current.TakePhotoAsync(new Plugin.Media.Abstractions.StoreCameraMediaOptions() { Name = "receipt.png" });
             if (photo != null)
             {
+                //ImageSource imSource = ImageSource.FromStream(() =>
+                //{
+                //    return photo.GetStream();
+                //});
+                //Image tempImg = new Image();
+                //tempImg.Source = imSource;
+                
+                //byte[] data;
+                //using (var memoryStream = new MemoryStream())
+                //{
+                //    photo.GetStream().CopyTo(memoryStream);
+                //    data = memoryStream.ToArray();
+                //}
+                //skCameraImage = SKImage.FromEncodedData(data);
+                //var processingImgBuffer = _textRecognizer.OpenCv(data);
+               
+                //skCameraImage = SKImage.FromEncodedData(processingImgBuffer);
+                //skCameraImage = SKImage.FromEncodedData(processingImgBuffer);
+                //camCanvas.InvalidateSurface();
+                //cameraImage.Source = ImageSource.FromStream(() => new MemoryStream(processingImgBuffer));
+
                 cameraImage.Source = ImageSource.FromStream(() =>
                 {
                     return photo.GetStream();

@@ -2,7 +2,8 @@
 using Android.Content.PM;
 using Android.Runtime;
 using Android.OS;
-using Android.Gms.Vision.Texts;
+using Android.Util;
+using Org.Opencv.Android;
 
 namespace ReadReceipt.Droid
 {
@@ -20,10 +21,29 @@ namespace ReadReceipt.Droid
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             LoadApplication(new App());
         }
+        
+
+        protected override void OnResume()
+        {
+            base.OnResume();
+            if (!OpenCVLoader.InitDebug())
+            {
+                Log.Debug("OpenCV", "Internal OpenCV library not found. Using OpenCV Manager for initialization");
+                OpenCVLoader.InitAsync(OpenCVLoader.OpencvVersion300, this, null);
+            }
+            else
+            {
+                Log.Debug("OpenCV", "OpenCV library found inside package. Using it!");
+                //mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
+            }
+        }
+
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+
+
     }
 }
