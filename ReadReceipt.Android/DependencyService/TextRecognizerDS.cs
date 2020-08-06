@@ -2,17 +2,13 @@
 using Android.Gms.Vision.Texts;
 using ReadReceipt.Dependencies;
 using ReadReceipt.Droid.DependencyService;
-using Android.Util;
 using System;
 using System.Collections.Generic;
 using ReadReceipt.Models;
 using Org.Opencv.Core;
-using Size = Org.Opencv.Core.Size;
 using Org.Opencv.Imgcodecs;
-using Android.Graphics;
 using Org.Opencv.Imgproc;
 using Xamarin.Forms.Internals;
-using Org.Apache.Http.Conn;
 
 [assembly: Dependency(typeof(TextRecognizerDS))]
 namespace ReadReceipt.Droid.DependencyService
@@ -40,9 +36,7 @@ namespace ReadReceipt.Droid.DependencyService
                     readingTexts?.Invoke(texts);
                 };
                 textRecognizer.SetProcessor(textProcessor);
-
                 var filteredData = FilterReceipt(data);
-
                 textRecognizer.ReceiveFrame(AndroidFrameHelper.GetFrame(filteredData));
             }
         }
@@ -68,7 +62,7 @@ namespace ReadReceipt.Droid.DependencyService
 
             Mat detectedEdges = new Mat();
             Mat hierarchy = new Mat();
-           
+
             Imgproc.CvtColor(src, gray, Imgproc.ColorBgr2gray);
 
             Imgproc.MedianBlur(gray, srcBlur, 41);
@@ -85,6 +79,7 @@ namespace ReadReceipt.Droid.DependencyService
 
             var middlePoint = new Org.Opencv.Core.Point(detectedEdges.Width() / 2, detectedEdges.Height() / 2);
             Mat mask = new Mat(srcBlur.Rows(), srcBlur.Cols(), srcBlur.Type(), new Scalar(0));
+            var p = new Org.Opencv.Core.Point[4];
             contors.ForEach(x =>
             {
                 var rect = Imgproc.BoundingRect(x);
@@ -92,7 +87,16 @@ namespace ReadReceipt.Droid.DependencyService
                 {
                     if (rect.Contains(middlePoint))
                     {
-                        Imgproc.Rectangle(src, new Org.Opencv.Core.Point(rect.X, rect.Y), new Org.Opencv.Core.Point(rect.X + rect.Width, rect.Y + rect.Height), new Scalar(0, 255, 0), 5);
+                        var rRect = MatOfPointToRect(new MatOfPoint2f(x.ToArray()));
+                        Android.Runtime.JavaList<MatOfPoint> list = new Android.Runtime.JavaList<MatOfPoint>();
+                        list.Add(x);
+                        var p = new Org.Opencv.Core.Point[4];
+                        rRect.Points(p);
+
+                        Imgproc.Line(src, p[0], p[1], new Scalar(0, 0, 255), 5);
+                        Imgproc.Line(src, p[1], p[2], new Scalar(0, 0, 255), 5);
+                        Imgproc.Line(src, p[2], p[3], new Scalar(0, 0, 255), 5);
+                        Imgproc.Line(src, p[3], p[0], new Scalar(0, 0, 255), 5);
                         Imgproc.Rectangle(mask, new Org.Opencv.Core.Point(rect.X, rect.Y), new Org.Opencv.Core.Point(rect.X + rect.Width, rect.Y + rect.Height), new Scalar(255, 255, 255), -1);
                     }
                 }
@@ -107,9 +111,19 @@ namespace ReadReceipt.Droid.DependencyService
             Core.Bitwise_not(mask2, mask2);
             mask2 = new Mat(mask2, new Org.Opencv.Core.Rect(1, 1, mask2.Width() - 2, mask2.Height() - 2));
             Imgproc.CvtColor(mask2, mask2, Imgproc.ColorGray2bgr);
-         
+
             Core.Bitwise_and(src, mask2, result);
+
+            //var kernal = Mat.Zeros(new Size(5, 5), CvType.Cv8u);
+            //Imgproc.Dilate(result, result, kernal, new Org.Opencv.Core.Point(0, 0), iterations: 1);
+
             return MatToByteArray(result);
+        }
+
+        public static RotatedRect MatOfPointToRect(MatOfPoint2f points)
+        {
+            RotatedRect retVal = Imgproc.MinAreaRect(points);
+            return retVal;
         }
 
         private Mat ByteToMat(byte[] imageBuffer)

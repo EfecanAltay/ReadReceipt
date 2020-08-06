@@ -36,8 +36,12 @@ namespace ReadReceipt.Models
 
     public class ReceiptHeader
     {
+        public string No { get; set; }
+        public string Date { get; set; }
+        public string Time { get; set; }
         public string Title { get; set; }
-        public string Description { get; set; }
+        public string VD { get; set; } // Firmanın Vergi Dairesi veya Sicil
+        public string Description { get; set; } //Tüm Header Kısmı içerisinde Title da bulunabilir
         public ReceiptInfo Infos { get; set; } = new ReceiptInfo();
         public override string ToString()
         {

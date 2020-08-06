@@ -1,4 +1,5 @@
-﻿using Plugin.Media;
+﻿#define B
+using Plugin.Media;
 using ReadReceipt.Dependencies;
 using ReadReceipt.Models;
 using ReadReceipt.Utility;
@@ -118,7 +119,7 @@ namespace ReadReceipt.Views
 
             if (textBlockList != null && textBlockList.Any())
             {
-                #region Calculate_ALL_Wrod_Border
+                #region Calculate_ALL_Word_Border
                 textBlockList.ForEach(textBlock =>
                 {
                     var rect = textBlock.Border;
@@ -174,7 +175,7 @@ namespace ReadReceipt.Views
 
                 #endregion
 
-                #region Filtered
+                #region Content Key Value Filtered
                 Rectangle KeysBorder = ReceiptPaperBorder;
                 KeysBorder.Right = ReceiptPaperBorder.Left + ReceiptPaperBorder.Width / 3;
 
@@ -232,6 +233,99 @@ namespace ReadReceipt.Views
             }
         }
 
+        public Dictionary<string, ImageTextBlock> FindText(IEnumerable<ImageTextBlock> imageTextBlocks, IEnumerable<string> searchWords)
+        {
+            Dictionary<string, ImageTextBlock> returnedList = null;
+            foreach (var textblock in imageTextBlocks)
+            {
+                var text = textblock.Text.ToLower();
+                foreach (var searchWord in searchWords)
+                {
+                    var searcingWord = searchWord.ToLower();
+                    if (text.Contains(searcingWord))
+                    {
+                        if (returnedList == null)
+                            returnedList = new Dictionary<string, ImageTextBlock>();
+
+                        if (returnedList.Any() == false || returnedList.ContainsKey(searcingWord) == false)
+                        {
+                            returnedList.Add(searcingWord, textblock);
+                        }
+                    }
+                }
+            }
+            return returnedList;
+        }
+
+        public ImageTextBlock FindText(IEnumerable<ImageTextBlock> imageTextBlocks, string searchWord)
+        {
+            ImageTextBlock searchingText = null;
+            foreach (var textblock in imageTextBlocks)
+            {
+                var text = textblock.Text;
+                if (text.ToLower().Contains(searchWord))
+                {
+                    return textblock;
+                }
+            }
+            return searchingText;
+        }
+
+        public string FindValue(IEnumerable<ImageTextBlock> texts, string searchWord)
+        {
+            var findingName = FindText(texts, searchWord);
+            if (findingName != null)
+            {
+                string n_SearchWord = null;
+                if (searchWord.Contains(" "))
+                {
+                    n_SearchWord = searchWord.Replace(" ", "_");
+                    findingName.Text = findingName.Text.ToLower().Replace(searchWord.ToLower(), n_SearchWord);
+                }
+                if (n_SearchWord == null)
+                    return GetValueInText(findingName.Text, searchWord);
+                else
+                    return GetValueInText(findingName.Text, n_SearchWord);
+            }
+            return null;
+        }
+
+        public string FindValue(IEnumerable<ImageTextBlock> texts, IEnumerable<string> searchWords)
+        {
+            var findingName = FindText(texts, searchWords);
+            if (findingName != null && findingName.Any())
+            {
+                var KeyValuePair = findingName.First();
+                string n_SearchWord = null;
+                if (KeyValuePair.Key.Contains(" "))
+                {
+                    n_SearchWord = KeyValuePair.Key.Replace(" ", "_").ToLower();
+                    KeyValuePair.Value.Text = KeyValuePair.Value.Text.ToLower().Replace(KeyValuePair.Key.ToLower(), n_SearchWord);
+                }
+                if (n_SearchWord == null)
+                    return GetValueInText(KeyValuePair.Value.Text, KeyValuePair.Key);
+                else
+                    return GetValueInText(KeyValuePair.Value.Text, n_SearchWord);
+            }
+            return null;
+        }
+
+        public string GetValueInText(string text, string Key)
+        {
+            var index = text.ToLower().IndexOf(Key.ToLower());
+            var valueString = text.Substring(index + Key.Length);
+            var values = valueString.Replace("\n", " ").Replace("  ", " ").Split(' ');
+            if (values[0] != ":")
+            {
+                return values[0];
+            }
+            else if (values.Length > 1)
+            {
+                return values[1];
+            }
+            return null;
+        }
+
         private async void Take_Receipt_Clicked(object sender, System.EventArgs e)
         {
 
@@ -243,27 +337,18 @@ namespace ReadReceipt.Views
             var photo = await Plugin.Media.CrossMedia.Current.TakePhotoAsync(new Plugin.Media.Abstractions.StoreCameraMediaOptions() { Name = "receipt.png" });
             if (photo != null)
             {
-                //ImageSource imSource = ImageSource.FromStream(() =>
-                //{
-                //    return photo.GetStream();
-                //});
-                //Image tempImg = new Image();
-                //tempImg.Source = imSource;
-                
-                //byte[] data;
-                //using (var memoryStream = new MemoryStream())
-                //{
-                //    photo.GetStream().CopyTo(memoryStream);
-                //    data = memoryStream.ToArray();
-                //}
-                //skCameraImage = SKImage.FromEncodedData(data);
-                //var processingImgBuffer = _textRecognizer.OpenCv(data);
-               
-                //skCameraImage = SKImage.FromEncodedData(processingImgBuffer);
-                //skCameraImage = SKImage.FromEncodedData(processingImgBuffer);
-                //camCanvas.InvalidateSurface();
-                //cameraImage.Source = ImageSource.FromStream(() => new MemoryStream(processingImgBuffer));
-
+#if A
+                byte[] data;
+                using (var memoryStream = new MemoryStream())
+                {
+                    photo.GetStream().CopyTo(memoryStream);
+                    data = memoryStream.ToArray();
+                }
+                var processingImgBuffer = _textRecognizer.OpenCv(data);
+                skCameraImage = SKImage.FromEncodedData(processingImgBuffer);
+                cameraImage.Source = ImageSource.FromStream(() => new MemoryStream(processingImgBuffer));
+#endif        
+#if B
                 cameraImage.Source = ImageSource.FromStream(() =>
                 {
                     return photo.GetStream();
@@ -275,6 +360,7 @@ namespace ReadReceipt.Views
                     ReadyToSave = null;
                 };
                 Read_Receipt();
+#endif
                 camCanvas.InvalidateSurface();
             }
         }
@@ -309,7 +395,22 @@ namespace ReadReceipt.Views
                 });
             });
             ReceiptContent content = new ReceiptContent(pairingItems);
-            Receipt receipt = new Receipt(content);
+
+            //Get Infos...
+
+            var vd = FindValue(textBlockList, new string[] { "v.d.", "sicil" });
+            var date = FindValue(textBlockList, "tarih");
+            var time = FindValue(textBlockList, "saat");
+            var receiptNo = FindValue(textBlockList, "fis no");
+
+            ReceiptHeader header = new ReceiptHeader()
+            {
+                No = receiptNo,
+                Date = date,
+                Time = time,
+                VD = vd
+            };
+            Receipt receipt = new Receipt(header, content);
             MessagingCenter.Send(this, "AddItem", receipt);
         }
 
