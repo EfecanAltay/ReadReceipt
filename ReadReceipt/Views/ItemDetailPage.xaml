@@ -2,41 +2,250 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:cutomviews="clr-namespace:ReadReceipt.CutomViews"
              mc:Ignorable="d"
-             Padding="5"
+             Padding="0"
              x:Name="ItemDetailPageKey"
              x:Class="ReadReceipt.Views.ItemDetailPage"
              Title="{Binding Title}">
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Sil" Clicked="ToolbarDeleteItem_Clicked" />
-        <ToolbarItem Text="Gönder" Clicked="ToolbarSendItem_Clicked" />
+        <ToolbarItem Text="Gönder" Clicked="ToolbarSendItem_Clicked"  Order="Secondary" />
     </ContentPage.ToolbarItems>
-    <StackLayout Spacing="20" Padding="10" >
-        <Label Text="Fiş Adı :" FontSize="Medium" TextColor="PaleVioletRed" FontAttributes="Bold" />
-        <Editor BackgroundColor="Gray" Unfocused="Editor_Focused" Grid.Column="1" Text="{Binding Item.Description}" HorizontalOptions="FillAndExpand" AutoSize="TextChanges" />
-        <Label Text="Alınanlar :" FontSize="Medium" TextColor="PaleVioletRed" FontAttributes="Bold"  />
-        <ListView ItemsSource="{Binding Item.Content.PairingItems}" SelectionMode="None" HasUnevenRows="True">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ViewCell>
-                        <Grid BackgroundColor="Gray" VerticalOptions="Fill">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*"></ColumnDefinition>
-                                <ColumnDefinition Width="2*"></ColumnDefinition>
-                                <ColumnDefinition Width="2*"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"></RowDefinition>
-                            </Grid.RowDefinitions>
-                            <Button Grid.Column="0" Text="X" TextColor="Red" Command="{Binding Source={x:Reference ItemDetailPageKey},Path='BindingContext.Item.RemoveItem' }" CommandParameter="{Binding .}" />
-                            <Editor Unfocused="Editor_Focused" Grid.Row="0" Grid.Column="1" Text="{Binding Key}" HorizontalOptions="FillAndExpand" AutoSize="TextChanges" />
-                            <Editor Unfocused="Editor_Focused"  Grid.Column="2" Text="{Binding Value}"  HorizontalOptions="FillAndExpand" AutoSize="TextChanges"/>
-                        </Grid>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-        <Button Text=" + Satır ekle" Command="{Binding Source={x:Reference ItemDetailPageKey},Path='BindingContext.Item.AddItem' }"/>
-    </StackLayout>
+    <ScrollView>
+        <StackLayout Spacing="20" Padding="10" BackgroundColor="#F2F2F2" >
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackLayout Grid.Column="0" HorizontalOptions="FillAndExpand">
+                    <Label Text="No" FontSize="Medium" TextColor="DarkGreen" FontAttributes="Bold" />
+                    <Frame Padding="5" CornerRadius="10" BackgroundColor="#BEBEBE" >
+                        <cutomviews:CustomEntry Keyboard="Numeric" TextColor="White" Placeholder="No" PlaceholderColor="#E4E3E3" Text="{Binding Receipt.Header.No,Mode=Default}" HorizontalOptions="FillAndExpand" />
+                    </Frame>
+                </StackLayout>
+                <StackLayout Grid.Column="1" HorizontalOptions="FillAndExpand">
+                    <Label Text="Tarih" FontSize="Medium" TextColor="DarkGreen" FontAttributes="Bold" />
+                    <Frame Padding="5" CornerRadius="10" BackgroundColor="#BEBEBE" >
+                        <DatePicker TextColor="White" Date="{Binding Receipt.Header.Date,Mode=Default}" HorizontalOptions="FillAndExpand"/>
+                    </Frame>
+                </StackLayout>
+                <StackLayout Grid.Column="2" HorizontalOptions="FillAndExpand">
+                    <Label Text="Saat" FontSize="Medium" TextColor="DarkGreen" FontAttributes="Bold" />
+                    <Frame Padding="5" CornerRadius="10" BackgroundColor="#BEBEBE" >
+                        <TimePicker TextColor="White" Time="{Binding Receipt.Header.Time,Mode=Default}" HorizontalOptions="FillAndExpand"  />
+                    </Frame>
+                </StackLayout>
+            </Grid>
+            <StackLayout HorizontalOptions="FillAndExpand">
+                <Label Text="Şirket" FontSize="Medium" TextColor="DarkGreen" FontAttributes="Bold" />
+                <Frame Padding="5" CornerRadius="10" BackgroundColor="#C6C6C6" >
+                    <cutomviews:CustomEntry TextColor="White" Placeholder="Şirket Adı" PlaceholderColor="#E4E3E3" Text="{Binding Receipt.Header.Title,Mode=Default}" HorizontalOptions="FillAndExpand"/>
+                </Frame>
+            </StackLayout>
+            <Grid VerticalOptions="Fill" Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <StackLayout Grid.Column="0" HorizontalOptions="FillAndExpand">
+                    <Label Text="V.D" FontSize="Medium" TextColor="DarkGreen" FontAttributes="Bold" />
+                    <Frame Padding="5" CornerRadius="10" BackgroundColor="#BEBEBE" >
+                        <Editor TextColor="White" Placeholder="Vergi Dairesi Adı" BackgroundColor="DarkGray" PlaceholderColor="#E4E3E3" Text="{Binding Receipt.Header.VDName,Mode=Default}" HorizontalOptions="FillAndExpand" AutoSize="TextChanges" />
+                    </Frame>
+                </StackLayout>
+                <StackLayout Grid.Column="1" HorizontalOptions="FillAndExpand">
+                    <Label Text="V.D.N" FontSize="Medium" TextColor="DarkGreen" FontAttributes="Bold" />
+                    <Frame Padding="5" CornerRadius="10" BackgroundColor="#BEBEBE" >
+                        <cutomviews:CustomEntry Keyboard="Numeric" PlaceholderColor="#E4E3E3" TextColor="White" Placeholder="Vergi Dairesi No" Text="{Binding Receipt.Header.VD,Mode=Default}" HorizontalOptions="FillAndExpand"/>
+                    </Frame>
+                </StackLayout>
+            </Grid>
+
+            <StackLayout Spacing="0">
+                <Grid HorizontalOptions="FillAndExpand">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" Text="KDV" FontSize="Medium" TextColor="DarkGreen" FontAttributes="Bold" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center" />
+                    <Label Grid.Column="1" Text="KDV Farkı" FontSize="Medium" TextColor="DarkGreen" FontAttributes="Bold" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center" />
+                    <Label Grid.Column="2" Text="KDV'siz" FontSize="Medium" TextColor="DarkGreen" FontAttributes="Bold" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"/>
+                </Grid>
+                <Grid HorizontalOptions="FillAndExpand" VerticalOptions="Fill" RowSpacing="0" BackgroundColor="#E5F5F8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Button x:Name="KDV1CollapseButton" Grid.Column="0" Text="↓" FontSize="20" FontAttributes="Bold" Clicked="KDV1CollapseButton_Clicked" />
+                    <Label Grid.Column="1" Text="%1" TextColor="#0700C7" FontSize="Medium" FontAttributes="Bold" VerticalTextAlignment="Center" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center" />
+                    <cutomviews:CustomEntry Grid.Column="2"  Text="{Binding Receipt.Header.KDV1Diff,Mode=Default}" Keyboard="Numeric" Placeholder="0.0" TextColor="#0700C7" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"/>
+                    <cutomviews:CustomEntry Grid.Column="3" Text="{Binding Receipt.Header.KDV1WithoutVal,Mode=Default}" Keyboard="Numeric" Placeholder="0.0" TextColor="#0700C7" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"  />
+                    <CollectionView IsVisible="false" HeightRequest="50" x:Name="kdv1List" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" VerticalOptions="Fill" ItemsSource="{Binding Receipt.Header.KDV1Items}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <StackLayout Spacing="0">
+                                    <StackLayout Spacing="0" Orientation="Horizontal">
+                                        <cutomviews:CustomEntry HorizontalOptions="FillAndExpand" Placeholder="0.0" Keyboard="Numeric" HeightRequest="50" Text="{Binding Val,Mode=Default}"></cutomviews:CustomEntry>
+                                        <Button Text="Sil" Clicked="KDV1Remove_Clicked" Command="{Binding Source={x:Reference ItemDetailPageKey}, Path=BindingContext.Receipt.Header.RemoveKDV1Command}" CommandParameter="{Binding .}" />
+                                    </StackLayout>
+                                    <BoxView HeightRequest="1" BackgroundColor="Gray"/>
+                                </StackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                        <CollectionView.Footer>
+                            <StackLayout>
+                                <Button Text="Ekle" Command="{Binding Receipt.Header.AddKDVCommand}" CommandParameter="1" Clicked="KDV1Add_Clicked"></Button>
+                            </StackLayout>
+                        </CollectionView.Footer>
+                    </CollectionView>
+                </Grid>
+                <Grid HorizontalOptions="FillAndExpand" BackgroundColor="#F8E5E5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Button x:Name="KDV8CollapseButton" Grid.Column="0" Text="↓" FontSize="20" FontAttributes="Bold" Clicked="KDV8CollapseButton_Clicked" />
+                    <Label Grid.Column="1" Text="%8" FontSize="Medium" TextColor="#E11F1F" FontAttributes="Bold" VerticalTextAlignment="Center" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center" />
+                    <cutomviews:CustomEntry Text="{Binding Receipt.Header.KDV8Diff,Mode=Default}" Keyboard="Numeric" Placeholder="0.0"  Grid.Column="2" TextColor="#E11F1F" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"/>
+                    <cutomviews:CustomEntry Text="{Binding Receipt.Header.KDV8WithoutVal,Mode=Default}" Keyboard="Numeric" Placeholder="0.0"  Grid.Column="3" TextColor="#E11F1F" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"  />
+                    <CollectionView BackgroundColor="#E2D1D1" IsVisible="false" HeightRequest="50" x:Name="kdv8List" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" VerticalOptions="Fill" ItemsSource="{Binding Receipt.Header.KDV8Items}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <StackLayout Spacing="0">
+                                    <StackLayout Spacing="0" Orientation="Horizontal">
+                                        <cutomviews:CustomEntry HorizontalOptions="FillAndExpand" Placeholder="0.0" Keyboard="Numeric" HeightRequest="50" Text="{Binding Val,Mode=Default}"/>
+                                        <Button Text="Sil" Clicked="KDV8Remove_Clicked"  Command="{Binding Source={x:Reference ItemDetailPageKey}, Path=BindingContext.Receipt.Header.RemoveKDV8Command}" CommandParameter="{Binding .}" />
+                                    </StackLayout>
+                                    <BoxView HeightRequest="1" BackgroundColor="Gray"/>
+                                </StackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                        <CollectionView.Footer>
+                            <StackLayout>
+                                <Button Text="Ekle" Command="{Binding Receipt.Header.AddKDVCommand}" CommandParameter="8" Clicked="KDV8Add_Clicked"/>
+                            </StackLayout>
+                        </CollectionView.Footer>
+                    </CollectionView>
+                </Grid>
+                <Grid HorizontalOptions="FillAndExpand" BackgroundColor="#D6F9C9">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Button x:Name="KDV18CollapseButton" Grid.Column="0" Text="↓" FontSize="20" FontAttributes="Bold" Clicked="KDV18CollapseButton_Clicked" />
+                    <Label Grid.Column="1" Text="%18" FontSize="Medium" TextColor="#01B14D" FontAttributes="Bold" VerticalTextAlignment="Center" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center" />
+                    <cutomviews:CustomEntry Text="{Binding Receipt.Header.KDV18Diff,Mode=Default}" Keyboard="Numeric" Placeholder="0.0" Grid.Column="2" TextColor="#01B14D" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"/>
+                    <cutomviews:CustomEntry Text="{Binding Receipt.Header.KDV18WithoutVal,Mode=Default}" Keyboard="Numeric" Placeholder="0.0" Grid.Column="3" TextColor="#01B14D" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"  />
+                    <CollectionView BackgroundColor="#AED1A1" IsVisible="false" HeightRequest="50" x:Name="kdv18List" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" VerticalOptions="Fill" ItemsSource="{Binding Receipt.Header.KDV18Items}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <StackLayout Spacing="0">
+                                    <StackLayout Spacing="0" Orientation="Horizontal">
+                                        <cutomviews:CustomEntry HorizontalOptions="FillAndExpand" Placeholder="0.0" Keyboard="Numeric" HeightRequest="50" Text="{Binding Val,Mode=Default}"></cutomviews:CustomEntry>
+                                        <Button Text="Sil" Clicked="KDV18Remove_Clicked"  Command="{Binding Source={x:Reference ItemDetailPageKey}, Path=BindingContext.Receipt.Header.RemoveKDV18Command}" CommandParameter="{Binding .}"  />
+                                    </StackLayout>
+                                   <BoxView HeightRequest="1" BackgroundColor="Gray"/>
+                                </StackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                        <CollectionView.Footer>
+                            <StackLayout>
+                                <Button Text="Ekle" Command="{Binding Receipt.Header.AddKDVCommand}" CommandParameter="18" Clicked="KDV18Add_Clicked"></Button>
+                            </StackLayout>
+                        </CollectionView.Footer>
+                    </CollectionView>
+                </Grid>
+                <Grid HorizontalOptions="FillAndExpand">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Text="Hesapla" Command="{Binding Receipt.Header.CalculateResultCommand}" />
+                    <Button Grid.Column="1" Text="Topla" Command="{Binding Receipt.Header.SumResultCommand}"/>
+                </Grid>
+            </StackLayout>
+            <Grid HorizontalOptions="FillAndExpand">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Text="TOPLAM" FontSize="Medium" TextColor="DarkGreen" FontAttributes="Bold" VerticalTextAlignment="Center" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Start" />
+                <StackLayout Spacing="0" Grid.Column="1" >
+                    <Label Text="Kdv Toplam" FontSize="10" HorizontalOptions="Center" Margin="0,0,0,0"></Label>
+                    <cutomviews:CustomEntry FontSize="28" Keyboard="Numeric" Placeholder="0.0" TextColor="Blue" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"  Text="{Binding Receipt.Header.KDV,Mode=Default}"/>
+                    <Label Text="{Binding Receipt.Header.KDVResults}" TextColor="Red"  IsVisible="{Binding  Receipt.Header.CalculatedResults}" TranslationY="-10" FontSize="10" HorizontalOptions="Center" Margin="0,0,0,0"></Label>
+                </StackLayout>
+                <StackLayout Spacing="0" Grid.Column="2" >
+                    <Label Text="Matrah" FontSize="10" HorizontalOptions="Center" Margin="0,0,0,0"></Label>
+                    <cutomviews:CustomEntry FontSize="28" Keyboard="Numeric" Placeholder="0.0" TextColor="Blue" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"  Text="{Binding Receipt.Header.Matrah,Mode=Default}"/>
+                    <Label Grid.Column="1" Text="{Binding Receipt.Header.MatrahResult}" IsVisible="{Binding  Receipt.Header.CalculatedResults}" TranslationY="-10" TextColor="Red" FontSize="10" HorizontalOptions="Center" Margin="0,0,0,0"/>
+                </StackLayout>
+            </Grid>
+            <Grid HorizontalOptions="FillAndExpand">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Text="Genel TOPLAM" FontSize="Medium" TextColor="DarkGreen" FontAttributes="Bold" VerticalTextAlignment="Center" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Start" />
+                <cutomviews:CustomEntry FontSize="32" Keyboard="Numeric" Placeholder="0.0" Grid.Column="1" TextColor="Blue" HorizontalOptions="FillAndExpand"  Text="{Binding Receipt.Header.Total,Mode=Default}"  HorizontalTextAlignment="Center"/>
+                <Label Grid.Column="1" Text="{Binding Receipt.Header.TotalResults}" IsVisible="{Binding Receipt.Header.CalculatedResults}" TextColor="Red" TranslationY="0" FontSize="10" HorizontalOptions="Center" Margin="0,0,0,0" VerticalTextAlignment="End"/>
+            </Grid>
+            <Grid HorizontalOptions="FillAndExpand">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Text="Sonuçları Aktar" Command="{Binding Receipt.Header.MoveResultCommand}"/>
+            </Grid>
+            
+            <Label IsVisible="false" Text="Kalemler :" FontSize="Medium" TextColor="DarkGreen" FontAttributes="Bold"  />
+            <ListView IsVisible="false" ItemsSource="{Binding Item.Content.PairingItems}" SelectionMode="None" HasUnevenRows="True" VerticalOptions="Start">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid BackgroundColor="Gray" VerticalOptions="Fill">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <Button Grid.Column="0" Text="X" TextColor="Red" Command="{Binding Source={x:Reference ItemDetailPageKey},Path='BindingContext.Item.RemoveItem' }" CommandParameter="{Binding .}" />
+                                <cutomviews:CustomEntry Grid.Row="0" Grid.Column="1" Text="{Binding Key}" HorizontalOptions="FillAndExpand" />
+                                <cutomviews:CustomEntry Grid.Column="2" Text="{Binding Value}"  HorizontalOptions="FillAndExpand" />
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Button IsVisible="false" Text=" + Satır ekle" Command="{Binding Source={x:Reference ItemDetailPageKey},Path='BindingContext.Item.AddItem' }"/>
+        </StackLayout>
+    </ScrollView>
 </ContentPage>

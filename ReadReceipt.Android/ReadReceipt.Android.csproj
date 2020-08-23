@@ -74,6 +74,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomRenderer\CustomEntryRenderer.cs" />
     <Compile Include="DependencyService\AndroidFrameHelper.cs" />
     <Compile Include="DependencyService\TextRecognationProcessor.cs" />
     <Compile Include="DependencyService\TextRecognizerDS.cs" />

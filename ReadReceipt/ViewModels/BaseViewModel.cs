@@ -18,7 +18,9 @@ namespace ReadReceipt.ViewModels
         public bool IsBusy
         {
             get { return isBusy; }
-            set { SetProperty(ref isBusy, value); }
+            set {
+                OnPropertyChanged(nameof(IsBusy));
+            }
         }
 
         string title = string.Empty;

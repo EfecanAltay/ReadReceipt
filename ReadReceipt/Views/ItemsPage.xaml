@@ -4,47 +4,60 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             BackgroundColor="White"
+             BackgroundColor="#F2F2F2"
              x:Class="ReadReceipt.Views.ItemsPage"
              Title="{Binding Title}"
              x:Name="BrowseItemsPage">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Add" Clicked="AddItem_Clicked" />
+        <ToolbarItem Text="Gönder" Command="{Binding SendMailCommand}" Order="Secondary" />
+        <ToolbarItem Text="Fiş Ekle" Command="{Binding AddItemCommand}" />
     </ContentPage.ToolbarItems>
-
-    <RefreshView IsRefreshing="{Binding IsBusy, Mode=TwoWay}" Command="{Binding LoadItemsCommand}">
-        <CollectionView x:Name="ItemsCollectionView"
-                ItemsSource="{Binding Items}">
-            <d:CollectionView.ItemsSource>
-                <x:Array Type="{x:Type x:String}">
-                    <x:String>First Item</x:String>
-                    <x:String>Second Item</x:String>
-                    <x:String>Third Item</x:String>
-                    <x:String>Fourth Item</x:String>
-                    <x:String>Fifth Item</x:String>
-                    <x:String>Sixth Item</x:String>
-                </x:Array>
-            </d:CollectionView.ItemsSource>
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <StackLayout Padding="10">
-                        <Label Text="{Binding Header.Title}" 
-                                d:Text="{Binding .}"
-                                LineBreakMode="NoWrap" 
-                                Style="{DynamicResource ListItemTextStyle}" 
-                                FontSize="16" />
-                        <Label Text="{Binding Header.Description}" 
-                                d:Text="Item descripton"
-                                LineBreakMode="NoWrap"
-                                Style="{DynamicResource ListItemDetailTextStyle}"
-                                FontSize="13" />
-                        <StackLayout.GestureRecognizers>
-                            <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="OnItemSelected"></TapGestureRecognizer>
-                        </StackLayout.GestureRecognizers>
-                    </StackLayout>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-    </RefreshView> 
+    <StackLayout Spacing="0">
+        <StackLayout Padding="30,10" Orientation="Horizontal" BackgroundColor="Azure">
+            <CheckBox VerticalOptions="Center" Scale="1.5" BindingContext="dada" Color="Coral" />
+            <Label Text="Hepsini Seç" VerticalOptions="CenterAndExpand"/>
+        </StackLayout>
+        <BoxView HeightRequest="1" BackgroundColor="BlueViolet"/>
+        <RefreshView  IsRefreshing="{Binding IsBusy, Mode=Default}" Command="{Binding LoadItemsCommand}">
+            <CollectionView x:Name="ItemsCollectionView"
+                    ItemsSource="{Binding Items}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1" />
+                                <RowDefinition Height="50" />
+                                <RowDefinition Height="1" />
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="1" HorizontalOptions="FillAndExpand">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <CheckBox Grid.Column="0" HorizontalOptions="CenterAndExpand" VerticalOptions="Center" Scale="1.5"/>
+                                <Label Grid.Column="1" Text="{Binding Header.Title}" 
+                                            d:Text="{Binding .}"
+                                            LineBreakMode="NoWrap"
+                                       VerticalOptions="Center"
+                                            Style="{DynamicResource ListItemTextStyle}" 
+                                            FontSize="16" />
+                                <Label Grid.Column="2" Text=">"
+                                            TextColor="Gray"
+                                            HorizontalTextAlignment="Center"
+                                       VerticalTextAlignment="Center"     
+                                       Style="{DynamicResource ListItemDetailTextStyle}"
+                                            FontSize="28" />
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="OnItemSelected"></TapGestureRecognizer>
+                                </Grid.GestureRecognizers>
+                            </Grid>
+                            <BoxView Grid.Row="2"  HeightRequest="1" BackgroundColor="LightGray"></BoxView>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView> 
+    </StackLayout>
 </ContentPage>

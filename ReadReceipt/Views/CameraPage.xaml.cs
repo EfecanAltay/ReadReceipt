@@ -9,7 +9,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 using Xamarin.Forms.Xaml;
@@ -163,9 +166,13 @@ namespace ReadReceipt.Views
                             {
                                 ReceiptPaperBorder.Bottom = borderRect.Top;
                             }
-                            else if (stext.Contains("toplam") && ReceiptPaperBorder.Bottom < borderRect.Top)
+                            else if (stext.Contains("toplam") && stext.Contains("ara toplam") == false && ReceiptPaperBorder.Bottom < borderRect.Top)
                             {
                                 ReceiptPaperBorder.Bottom = borderRect.Bottom + 20;
+                            }
+                            else if ((stext.Contains("lopkdv") || stext.Contains("topkdv")) && ReceiptPaperBorder.Bottom < borderRect.Top)
+                            {
+                                ReceiptPaperBorder.Bottom = borderRect.Bottom + 40;
                             }
                         }
                     }
@@ -236,20 +243,23 @@ namespace ReadReceipt.Views
         public Dictionary<string, ImageTextBlock> FindText(IEnumerable<ImageTextBlock> imageTextBlocks, IEnumerable<string> searchWords)
         {
             Dictionary<string, ImageTextBlock> returnedList = null;
-            foreach (var textblock in imageTextBlocks)
+            if (imageTextBlocks != null)
             {
-                var text = textblock.Text.ToLower();
-                foreach (var searchWord in searchWords)
+                foreach (var textblock in imageTextBlocks)
                 {
-                    var searcingWord = searchWord.ToLower();
-                    if (text.Contains(searcingWord))
+                    var text = textblock.Text.ToLower();
+                    foreach (var searchWord in searchWords)
                     {
-                        if (returnedList == null)
-                            returnedList = new Dictionary<string, ImageTextBlock>();
-
-                        if (returnedList.Any() == false || returnedList.ContainsKey(searcingWord) == false)
+                        var searcingWord = searchWord.ToLower();
+                        if (text.Contains(searcingWord))
                         {
-                            returnedList.Add(searcingWord, textblock);
+                            if (returnedList == null)
+                                returnedList = new Dictionary<string, ImageTextBlock>();
+
+                            if (returnedList.Any() == false || returnedList.ContainsKey(searcingWord) == false)
+                            {
+                                returnedList.Add(searcingWord, textblock);
+                            }
                         }
                     }
                 }
@@ -260,18 +270,21 @@ namespace ReadReceipt.Views
         public ImageTextBlock FindText(IEnumerable<ImageTextBlock> imageTextBlocks, string searchWord)
         {
             ImageTextBlock searchingText = null;
-            foreach (var textblock in imageTextBlocks)
+            if (imageTextBlocks != null)
             {
-                var text = textblock.Text;
-                if (text.ToLower().Contains(searchWord))
+                foreach (var textblock in imageTextBlocks)
                 {
-                    return textblock;
+                    var text = textblock.Text;
+                    if (text.ToLower().Contains(searchWord))
+                    {
+                        return textblock;
+                    }
                 }
             }
             return searchingText;
         }
 
-        public string FindValue(IEnumerable<ImageTextBlock> texts, string searchWord)
+        public string FindValue(IEnumerable<ImageTextBlock> texts, string searchWord, bool before = false)
         {
             var findingName = FindText(texts, searchWord);
             if (findingName != null)
@@ -283,14 +296,14 @@ namespace ReadReceipt.Views
                     findingName.Text = findingName.Text.ToLower().Replace(searchWord.ToLower(), n_SearchWord);
                 }
                 if (n_SearchWord == null)
-                    return GetValueInText(findingName.Text, searchWord);
+                    return GetValueInText(findingName.Text, searchWord, before);
                 else
-                    return GetValueInText(findingName.Text, n_SearchWord);
+                    return GetValueInText(findingName.Text, n_SearchWord, before);
             }
             return null;
         }
 
-        public string FindValue(IEnumerable<ImageTextBlock> texts, IEnumerable<string> searchWords)
+        public string FindValue(IEnumerable<ImageTextBlock> texts, IEnumerable<string> searchWords, bool before = false)
         {
             var findingName = FindText(texts, searchWords);
             if (findingName != null && findingName.Any())
@@ -303,25 +316,72 @@ namespace ReadReceipt.Views
                     KeyValuePair.Value.Text = KeyValuePair.Value.Text.ToLower().Replace(KeyValuePair.Key.ToLower(), n_SearchWord);
                 }
                 if (n_SearchWord == null)
-                    return GetValueInText(KeyValuePair.Value.Text, KeyValuePair.Key);
+                    return GetValueInText(KeyValuePair.Value.Text, KeyValuePair.Key, before);
                 else
-                    return GetValueInText(KeyValuePair.Value.Text, n_SearchWord);
+                    return GetValueInText(KeyValuePair.Value.Text, n_SearchWord, before);
             }
             return null;
         }
 
-        public string GetValueInText(string text, string Key)
+        public string GetRowString(IEnumerable<ImageTextBlock> texts, IEnumerable<string> searchWords)
+        {
+            var findingNames = FindText(texts, searchWords);
+            if (findingNames != null && findingNames.Any())
+            {
+                foreach (var findingName in findingNames)
+                {
+                    var Rows = findingName.Value.Text.Split('\n');
+                    foreach (var searchingWord in searchWords)
+                    {
+                        var findingRows = Rows.Where(x => x.ToLower().Contains(searchingWord));
+                        if (findingRows.Any())
+                            return findingRows.First();
+                    }
+                }
+            }
+            return null;
+        }
+
+        public string GetValueInText(string text, string Key, bool before = false)
         {
             var index = text.ToLower().IndexOf(Key.ToLower());
-            var valueString = text.Substring(index + Key.Length);
-            var values = valueString.Replace("\n", " ").Replace("  ", " ").Split(' ');
-            if (values[0] != ":")
+            if (before == false)
             {
-                return values[0];
+                var valueString = text.Substring(index + Key.Length);
+                var values = valueString.Replace("\n", " ").Replace("  ", " ").Split(' ');
+                if (values[0] != ":")
+                {
+                    return values[0];
+                }
+                else if (values.Length > 1)
+                {
+                    return values[1];
+                }
             }
-            else if (values.Length > 1)
+            else
             {
-                return values[1];
+                var valueString = text.Substring(0, index);
+                var values = valueString.Replace("\n", " ").Replace("  ", " ").Split(' ');
+                if (values.Any())
+                {
+                    var returingText = values.Last();
+                    if (string.IsNullOrEmpty(returingText.Trim()) == false)
+                    {
+                        if (returingText.Length < 4 && values.Length > 2)
+                            return values[values.Length - 2] + returingText;
+                        else
+                            return returingText;
+                    }
+                    else if (values.Length > 1)
+                    {
+                        returingText = values[values.Length - 2];
+                        if (returingText.Length < 4 && values.Length > 3)
+                            return values[values.Length - 3] + returingText;
+                        else
+                            return returingText;
+                    }
+                    return values.Last();
+                }
             }
             return null;
         }
@@ -397,19 +457,42 @@ namespace ReadReceipt.Views
             ReceiptContent content = new ReceiptContent(pairingItems);
 
             //Get Infos...
-
-            var vd = FindValue(textBlockList, new string[] { "v.d.", "sicil" });
-            var date = FindValue(textBlockList, "tarih");
-            var time = FindValue(textBlockList, "saat");
-            var receiptNo = FindValue(textBlockList, "fis no");
-
-            ReceiptHeader header = new ReceiptHeader()
+            ReceiptHeader header = new ReceiptHeader();
+            if (textBlockList != null)
             {
-                No = receiptNo,
-                Date = date,
-                Time = time,
-                VD = vd
-            };
+                var vd = FindValue(textBlockList, new string[] { "v.d.", "sicil" });
+                if (string.IsNullOrEmpty(vd))
+                {
+                    var headerBlocks = FindText(textBlockList, new string[] { "a.s", "a.ş", "tic.", "san." });
+                    if (headerBlocks != null && headerBlocks.Any())
+                    {
+                        var matching = Regex.Match(headerBlocks.First().Value.Text, @"\d{10}");
+                        if (matching.Success)
+                        {
+                            vd = matching.Value;
+                        }
+                    }
+                }
+                var titleRow = GetRowString(textBlockList, new string[] { "a.s", "a.ş", "tic.", "t1c.", "san." });
+                var vdName = "";
+                if (string.IsNullOrEmpty(vd) == false)
+                    vdName = FindValue(textBlockList, vd, before: true);
+                var s_date = FindValue(textBlockList, new string[] { "tarlh", "tarih", "tarıh", "tar1h" });
+                var s_time = FindValue(textBlockList, "saat");
+                var date = DateTime.Parse(s_date);
+                var time = TimeSpan.Parse(s_time);
+                var receiptNo = FindValue(textBlockList, new string[] { "fis no", "f1$ no", "fi$ no", "f1ş no", "f1s no" });
+                header = new ReceiptHeader()
+                {
+                    Title = titleRow,
+                    No = receiptNo,
+                    Date = date,
+                    Time = time,
+                    VD = vd,
+                    VDName = vdName
+                };
+            }
+
             Receipt receipt = new Receipt(header, content);
             MessagingCenter.Send(this, "AddItem", receipt);
         }
@@ -422,5 +505,7 @@ namespace ReadReceipt.Views
                 return ms.ToArray();
             }
         }
+
+       
     }
 }
