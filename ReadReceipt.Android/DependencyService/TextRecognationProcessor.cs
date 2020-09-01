@@ -32,7 +32,7 @@ namespace ReadReceipt.Droid.DependencyService
 
         public void ReceiveDetections(Detections detections)
         {
-            SparseArray items = detections.DetectedItems;
+            var items = detections.DetectedItems;
             if (items.Size() != 0)
             {
                 List<ImageTextBlock> readingTextList = new List<ImageTextBlock>();

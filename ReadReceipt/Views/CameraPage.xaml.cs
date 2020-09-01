@@ -479,8 +479,13 @@ namespace ReadReceipt.Views
                     vdName = FindValue(textBlockList, vd, before: true);
                 var s_date = FindValue(textBlockList, new string[] { "tarlh", "tarih", "tarıh", "tar1h" });
                 var s_time = FindValue(textBlockList, "saat");
-                var date = DateTime.Parse(s_date);
-                var time = TimeSpan.Parse(s_time);
+                var date = DateTime.Now;
+                var time = TimeSpan.Zero;
+                if (string.IsNullOrEmpty(s_date) == false && Regex.Match(s_date, @"/^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}$/i").Success)
+                    date = DateTime.ParseExact(s_date, @"dd/MM/yyyy",
+    System.Globalization.CultureInfo.InvariantCulture);
+                if (string.IsNullOrEmpty(s_time) == false)
+                    time = TimeSpan.Parse(s_time);
                 var receiptNo = FindValue(textBlockList, new string[] { "fis no", "f1$ no", "fi$ no", "f1ş no", "f1s no" });
                 header = new ReceiptHeader()
                 {

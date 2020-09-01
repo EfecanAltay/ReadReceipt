@@ -30,12 +30,11 @@ namespace ReadReceipt.ViewModels
         {
             Title = "Fatura Listesi";
             Items = new ObservableCollection<Receipt>();
-
             MessagingCenter.Subscribe<CameraPage, Receipt>(this, "AddItem", async (obj, item) =>
             {
                 var newItem = item as Receipt;
                 Items.Add(newItem);
-                await DataStore.AddItemAsync(newItem);
+                //await DataStore.AddItemAsync(newItem);
             });
 
             SendMailCommand = new Command(OnSendMail);

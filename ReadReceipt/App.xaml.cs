@@ -2,6 +2,7 @@
 using ReadReceipt.Services;
 using ReadReceipt.Views;
 using Plugin.Media;
+using ReadReceipt.Models;
 
 namespace ReadReceipt
 {
