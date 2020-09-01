@@ -91,8 +91,8 @@
                     </Grid.RowDefinitions>
                     <Button x:Name="KDV1CollapseButton" Grid.Column="0" Text="↓" FontSize="20" FontAttributes="Bold" Clicked="KDV1CollapseButton_Clicked" />
                     <Label Grid.Column="1" Text="%1" TextColor="#0700C7" FontSize="Medium" FontAttributes="Bold" VerticalTextAlignment="Center" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center" />
-                    <cutomviews:CustomEntry Grid.Column="2"  Text="{Binding Receipt.Header.KDV1Diff,Mode=Default}" Keyboard="Numeric" Placeholder="0.0" TextColor="#0700C7" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"/>
-                    <cutomviews:CustomEntry Grid.Column="3" Text="{Binding Receipt.Header.KDV1WithoutVal,Mode=Default}" Keyboard="Numeric" Placeholder="0.0" TextColor="#0700C7" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"  />
+                    <cutomviews:CustomEntry Grid.Column="2"  Text="{Binding Receipt.Header.KDV1Diff,Mode=Default,StringFormat='{0:0.##}'}" Keyboard="Numeric" Placeholder="0.0" TextColor="#0700C7" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"/>
+                    <cutomviews:CustomEntry Grid.Column="3" Text="{Binding Receipt.Header.KDV1WithoutVal,Mode=Default,StringFormat='{0:0.##}'}" Keyboard="Numeric" Placeholder="0.0" TextColor="#0700C7" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"  />
                     <CollectionView IsVisible="false" HeightRequest="50" x:Name="kdv1List" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" VerticalOptions="Fill" ItemsSource="{Binding Receipt.Header.KDV1Items}">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
@@ -125,8 +125,8 @@
                     </Grid.RowDefinitions>
                     <Button x:Name="KDV8CollapseButton" Grid.Column="0" Text="↓" FontSize="20" FontAttributes="Bold" Clicked="KDV8CollapseButton_Clicked" />
                     <Label Grid.Column="1" Text="%8" FontSize="Medium" TextColor="#E11F1F" FontAttributes="Bold" VerticalTextAlignment="Center" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center" />
-                    <cutomviews:CustomEntry Text="{Binding Receipt.Header.KDV8Diff,Mode=Default}" Keyboard="Numeric" Placeholder="0.0"  Grid.Column="2" TextColor="#E11F1F" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"/>
-                    <cutomviews:CustomEntry Text="{Binding Receipt.Header.KDV8WithoutVal,Mode=Default}" Keyboard="Numeric" Placeholder="0.0"  Grid.Column="3" TextColor="#E11F1F" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"  />
+                    <cutomviews:CustomEntry Text="{Binding Receipt.Header.KDV8Diff,Mode=Default,StringFormat='{0:0.##}'}" Keyboard="Numeric" Placeholder="0.0"  Grid.Column="2" TextColor="#E11F1F" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"/>
+                    <cutomviews:CustomEntry Text="{Binding Receipt.Header.KDV8WithoutVal,Mode=Default,StringFormat='{0:0.##}'}" Keyboard="Numeric" Placeholder="0.0"  Grid.Column="3" TextColor="#E11F1F" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"  />
                     <CollectionView BackgroundColor="#E2D1D1" IsVisible="false" HeightRequest="50" x:Name="kdv8List" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" VerticalOptions="Fill" ItemsSource="{Binding Receipt.Header.KDV8Items}">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
@@ -159,8 +159,8 @@
                     </Grid.RowDefinitions>
                     <Button x:Name="KDV18CollapseButton" Grid.Column="0" Text="↓" FontSize="20" FontAttributes="Bold" Clicked="KDV18CollapseButton_Clicked" />
                     <Label Grid.Column="1" Text="%18" FontSize="Medium" TextColor="#01B14D" FontAttributes="Bold" VerticalTextAlignment="Center" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center" />
-                    <cutomviews:CustomEntry Text="{Binding Receipt.Header.KDV18Diff,Mode=Default}" Keyboard="Numeric" Placeholder="0.0" Grid.Column="2" TextColor="#01B14D" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"/>
-                    <cutomviews:CustomEntry Text="{Binding Receipt.Header.KDV18WithoutVal,Mode=Default}" Keyboard="Numeric" Placeholder="0.0" Grid.Column="3" TextColor="#01B14D" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"  />
+                    <cutomviews:CustomEntry Text="{Binding Receipt.Header.KDV18Diff,Mode=Default,StringFormat='{0:0.##}'}" Keyboard="Numeric" Placeholder="0.0" Grid.Column="2" TextColor="#01B14D" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"/>
+                    <cutomviews:CustomEntry Text="{Binding Receipt.Header.KDV18WithoutVal,Mode=Default,StringFormat='{0:0.##}'}" Keyboard="Numeric" Placeholder="0.0" Grid.Column="3" TextColor="#01B14D" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"  />
                     <CollectionView BackgroundColor="#AED1A1" IsVisible="false" HeightRequest="50" x:Name="kdv18List" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" VerticalOptions="Fill" ItemsSource="{Binding Receipt.Header.KDV18Items}">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
@@ -198,12 +198,12 @@
                 <Label Grid.Column="0" Text="TOPLAM" FontSize="Medium" TextColor="DarkGreen" FontAttributes="Bold" VerticalTextAlignment="Center" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Start" />
                 <StackLayout Spacing="0" Grid.Column="1" >
                     <Label Text="Kdv Toplam" FontSize="10" HorizontalOptions="Center" Margin="0,0,0,0"></Label>
-                    <cutomviews:CustomEntry FontSize="28" Keyboard="Numeric" Placeholder="0.0" TextColor="Blue" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"  Text="{Binding Receipt.Header.KDV,Mode=Default}"/>
-                    <Label Text="{Binding Receipt.Header.KDVResults}" TextColor="Red"  IsVisible="{Binding  Receipt.Header.CalculatedResults}" TranslationY="-10" FontSize="10" HorizontalOptions="Center" Margin="0,0,0,0"></Label>
+                    <cutomviews:CustomEntry FontSize="28" Keyboard="Numeric" Placeholder="0.0" TextColor="Blue" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"  Text="{Binding Receipt.Header.KDV,Mode=Default,StringFormat='{0:0.##}'}"/>
+                    <Label Text="{Binding Receipt.Header.KDVResults,StringFormat='{0:0.##}'}" TextColor="Red"  IsVisible="{Binding  Receipt.Header.CalculatedResults}" TranslationY="-10" FontSize="10" HorizontalOptions="Center" Margin="0,0,0,0"></Label>
                 </StackLayout>
                 <StackLayout Spacing="0" Grid.Column="2" >
                     <Label Text="Matrah" FontSize="10" HorizontalOptions="Center" Margin="0,0,0,0"></Label>
-                    <cutomviews:CustomEntry FontSize="28" Keyboard="Numeric" Placeholder="0.0" TextColor="Blue" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"  Text="{Binding Receipt.Header.Matrah,Mode=Default}"/>
+                    <cutomviews:CustomEntry FontSize="28" Keyboard="Numeric" Placeholder="0.0" TextColor="Blue" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"  Text="{Binding Receipt.Header.Matrah,Mode=Default,StringFormat='{0:0.##}'}"/>
                     <Label Grid.Column="1" Text="{Binding Receipt.Header.MatrahResult}" IsVisible="{Binding  Receipt.Header.CalculatedResults}" TranslationY="-10" TextColor="Red" FontSize="10" HorizontalOptions="Center" Margin="0,0,0,0"/>
                 </StackLayout>
             </Grid>
@@ -213,8 +213,8 @@
                     <ColumnDefinition Width="2*"/>
                 </Grid.ColumnDefinitions>
                 <Label Grid.Column="0" Text="Genel TOPLAM" FontSize="Medium" TextColor="DarkGreen" FontAttributes="Bold" VerticalTextAlignment="Center" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Start" />
-                <cutomviews:CustomEntry FontSize="32" Keyboard="Numeric" Placeholder="0.0" Grid.Column="1" TextColor="Blue" HorizontalOptions="FillAndExpand"  Text="{Binding Receipt.Header.Total,Mode=Default}"  HorizontalTextAlignment="Center"/>
-                <Label Grid.Column="1" Text="{Binding Receipt.Header.TotalResults}" IsVisible="{Binding Receipt.Header.CalculatedResults}" TextColor="Red" TranslationY="0" FontSize="10" HorizontalOptions="Center" Margin="0,0,0,0" VerticalTextAlignment="End"/>
+                <cutomviews:CustomEntry FontSize="32" Keyboard="Numeric" Placeholder="0.0" Grid.Column="1" TextColor="Blue" HorizontalOptions="FillAndExpand"  Text="{Binding Receipt.Header.Total,Mode=Default,StringFormat='{0:0.##}'}"  HorizontalTextAlignment="Center"/>
+                <Label Grid.Column="1" Text="{Binding Receipt.Header.TotalResults,StringFormat='{0:0.##}'}" IsVisible="{Binding Receipt.Header.CalculatedResults}" TextColor="Red" TranslationY="0" FontSize="10" HorizontalOptions="Center" Margin="0,0,0,0" VerticalTextAlignment="End"/>
             </Grid>
             <Grid HorizontalOptions="FillAndExpand">
                 <Grid.ColumnDefinitions>

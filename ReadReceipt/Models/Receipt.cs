@@ -377,7 +377,7 @@ namespace ReadReceipt.Models
             if(kdv1Items != null && kdv1Items.Any())
             {
                 kdv1Items.ForEach(x => {
-                    kdvSum += (x.Val / 100);
+                    kdvSum += (x.Val / 101);
                     sum += x.Val;
                 });
                 KDV1Diff = kdvSum;
@@ -394,7 +394,7 @@ namespace ReadReceipt.Models
             {
                 kdv8Items?.ForEach(x =>
                 {
-                    kdvSum += (x.Val / 100) * 8;
+                    kdvSum += ((x.Val *8) / 108);
                     sum += x.Val;
                 });
                 KDV8Diff = kdvSum;
@@ -411,7 +411,7 @@ namespace ReadReceipt.Models
             {
                 kdv18Items.ForEach(x =>
                 {
-                    kdvSum += (x.Val / 100) * 18;
+                    kdvSum += ((x.Val * 18) / 118);
                     sum += x.Val;
                 });
                 KDV18Diff = kdvSum;
