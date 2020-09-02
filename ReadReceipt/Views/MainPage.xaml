@@ -7,30 +7,19 @@
             mc:Ignorable="d"
             xmlns:android="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"
             android:TabbedPage.ToolbarPlacement="Bottom"
-            BarBackgroundColor="#2196F3"
+            BarBackgroundColor="{x:StaticResource NavigationPrimary}"
             BarTextColor="White"
             android:TabbedPage.BarItemColor="#66FFFFFF"
             android:TabbedPage.BarSelectedItemColor="White"
             xmlns:views="clr-namespace:ReadReceipt.Views"
             x:Class="ReadReceipt.Views.MainPage">
     <TabbedPage.Children>
-        <NavigationPage Title="Receipt Lists">
-            <NavigationPage.Icon>
-                <OnPlatform x:TypeArguments="FileImageSource">
-                    <On Platform="iOS" Value="tab_about.png"/>
-                </OnPlatform>
-            </NavigationPage.Icon>
+        <NavigationPage Title="Liste" IconImageSource="ic_list.png">
             <x:Arguments>
-                <views:ItemsPage />
+                <views:ReceiptGroupListPage />
             </x:Arguments>
         </NavigationPage>
-        
-        <NavigationPage Title="Camera">
-            <NavigationPage.Icon>
-                <OnPlatform x:TypeArguments="FileImageSource">
-                    <On Platform="iOS" Value="tab_feed.png"/>
-                </OnPlatform>
-            </NavigationPage.Icon>
+        <NavigationPage Title="Çek" IconImageSource="ic_camera.png">
             <x:Arguments>
                 <views:CameraPage />
             </x:Arguments>

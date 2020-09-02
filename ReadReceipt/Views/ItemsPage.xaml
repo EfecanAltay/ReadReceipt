@@ -14,14 +14,17 @@
         <ToolbarItem Text="Fiş Ekle" Command="{Binding AddItemCommand}" />
     </ContentPage.ToolbarItems>
     <StackLayout Spacing="0">
-        <StackLayout Padding="30,10" Orientation="Horizontal" BackgroundColor="Azure">
-            <CheckBox VerticalOptions="Center" Scale="1.5" BindingContext="dada" Color="Coral" />
-            <Label Text="Hepsini Seç" VerticalOptions="CenterAndExpand"/>
-        </StackLayout>
-        <BoxView HeightRequest="1" BackgroundColor="BlueViolet"/>
+        <Grid BackgroundColor="LightGray" Padding="15,0">
+            <Label Text="{Binding ReceiptGroup.GroupName}" FontSize="24" HeightRequest="80" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" />
+            <Image BackgroundColor="Transparent" Source="ic_edit.png" Aspect="AspectFit" VerticalOptions="CenterAndExpand" HorizontalOptions="EndAndExpand">
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="EditGroupName_Tapped"/>
+                </Image.GestureRecognizers>
+            </Image>
+        </Grid>
         <RefreshView  IsRefreshing="{Binding IsBusy, Mode=Default}" Command="{Binding LoadItemsCommand}">
             <CollectionView x:Name="ItemsCollectionView"
-                    ItemsSource="{Binding Items}">
+                    ItemsSource="{Binding ReceiptGroup.Receipts}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid>
@@ -36,7 +39,7 @@
                                     <ColumnDefinition Width="2*"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <CheckBox Grid.Column="0" HorizontalOptions="CenterAndExpand" VerticalOptions="Center" Scale="1.5"/>
+                                <CheckBox Grid.Column="0" IsChecked="{Binding IsChecked}" HorizontalOptions="CenterAndExpand" VerticalOptions="Center" Scale="1.5"/>
                                 <Label Grid.Column="1" Text="{Binding Header.Title}" 
                                             d:Text="{Binding .}"
                                             LineBreakMode="NoWrap"

@@ -12,8 +12,19 @@ using Xamarin.Forms.Internals;
 
 namespace ReadReceipt.Models
 {
-    public class Receipt
+    public class Receipt : BindableObject
     {
+        private bool isChecked;
+        public bool IsChecked
+        {
+            get { return isChecked; }
+            set
+            {
+                isChecked = value;
+                OnPropertyChanged(nameof(IsChecked));
+            }
+        }
+
         public string Id { get; set; }
         public ReceiptHeader Header { get; set; }
         public ReceiptContent Content { get; set; }

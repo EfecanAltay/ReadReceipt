@@ -2,7 +2,6 @@
 using ReadReceipt.Services;
 using ReadReceipt.Views;
 using Plugin.Media;
-using ReadReceipt.Models;
 
 namespace ReadReceipt
 {
@@ -12,7 +11,8 @@ namespace ReadReceipt
         public App()
         {
             InitializeComponent();
-            DependencyService.Register<MockDataStore>();
+            Akavache.Registrations.Start(Consts.ApplicationName);
+            DependencyService.Get<ICachingService>().Init();
             CrossMedia.Current.Initialize();
             MainPage = new MainPage();
         }

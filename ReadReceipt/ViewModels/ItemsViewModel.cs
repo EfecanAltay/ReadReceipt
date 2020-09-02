@@ -16,27 +16,27 @@ namespace ReadReceipt.ViewModels
 {
     public class ItemsViewModel : BaseViewModel
     {
-        private ObservableCollection<Receipt> items;
-        public ObservableCollection<Receipt> Items
+        private ReceiptGroup receiptGroup;
+        public ReceiptGroup ReceiptGroup
         {
-            get { return items; }
-            set { 
-                items = value;
-                OnPropertyChanged(nameof(Items));
+            get { return receiptGroup; }
+            set
+            {
+                receiptGroup = value;
+                OnPropertyChanged(nameof(ReceiptGroup));
             }
         }
 
-        public ItemsViewModel()
+        public ItemsViewModel(ReceiptGroup receiptGroup)
         {
             Title = "Fatura Listesi";
-            Items = new ObservableCollection<Receipt>();
-            MessagingCenter.Subscribe<CameraPage, Receipt>(this, "AddItem", async (obj, item) =>
+            this.ReceiptGroup = receiptGroup;
+            MessagingCenter.Subscribe<CameraPage, Receipt>(this, "AddItem", (obj, item) =>
             {
-                var newItem = item as Receipt;
-                Items.Add(newItem);
-                //await DataStore.AddItemAsync(newItem);
+                 var newItem = item as Receipt;
+                 ReceiptGroup.Receipts.Add(newItem);
             });
-
+            
             SendMailCommand = new Command(OnSendMail);
             AddItemCommand = new Command(OnAddItem);
         }
@@ -46,17 +46,30 @@ namespace ReadReceipt.ViewModels
 
         public async void OnSendMail()
         {
-            if(Items != null && Items.Any())
-                await SendEmail(Items, null);
+            if (ReceiptGroup.Receipts != null && ReceiptGroup.Receipts.Any())
+                await SendEmail(ReceiptGroup.Receipts, null);
+        }
+
+        public void OnAppearing()
+        {
+            AllSetCheck(false);
+        }
+
+        public void AllSetCheck(bool check)
+        {
+            foreach (var receipt in ReceiptGroup.Receipts)
+            {
+                receipt.IsChecked = check;
+            }
         }
 
         public void OnAddItem()
         {
-            if (Items == null)
+            if (ReceiptGroup.Receipts == null)
             {
-                Items = new ObservableCollection<Receipt>();
+                ReceiptGroup.Receipts = new ObservableCollection<Receipt>();
             }
-            Items.Add(new Receipt() { Header = new ReceiptHeader() { Title = "Yeni Fiş" } });   
+            ReceiptGroup.Receipts.Add(new Receipt() { Header = new ReceiptHeader() { Title = "Yeni Fiş" } });
         }
 
         public async Task SendEmail(IEnumerable<Receipt> receipts, List<string> recipients)
@@ -77,7 +90,7 @@ namespace ReadReceipt.ViewModels
                 receipts.ForEach(receipt =>
                 {
                     builder.AppendLine(receipt.ToCSVFormat());
-                });;
+                }); ;
 
                 File.WriteAllText(file, builder.ToString());
 

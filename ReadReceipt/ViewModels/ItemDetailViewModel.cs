@@ -17,7 +17,7 @@ namespace ReadReceipt.ViewModels
 
         public ICommand DeleteItemCommand => new Command(() =>
         {
-            _itemsViewModel?.Items.Remove(Receipt);
+            _itemsViewModel?.ReceiptGroup.Receipts.Remove(Receipt);
         });
     }
 }

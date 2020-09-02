@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             Title="Fiş Gurupları"
+             x:Class="ReadReceipt.Views.ReceiptGroupListPage">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Gönder" Command="{Binding SendMailCommand}" Order="Secondary" />
+        <ToolbarItem Text="Gurup Ekle" Clicked="ToolbarItem_Clicked" />
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <StackLayout Spacing="0">
+            <RefreshView  IsRefreshing="{Binding IsBusy, Mode=Default}" Command="{Binding LoadItemsCommand}">
+                <CollectionView
+                    ItemsSource="{Binding ReceiptGroupList}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="1" />
+                                    <RowDefinition Height="50" />
+                                    <RowDefinition Height="1" />
+                                </Grid.RowDefinitions>
+                                <Grid Grid.Row="1" HorizontalOptions="FillAndExpand">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <CheckBox Grid.Column="0" Color="{x:StaticResource SelectionPrimary}" CheckedChanged="CheckBox_CheckedChanged" IsChecked="{Binding IsChecked,Mode=Default}" HorizontalOptions="CenterAndExpand" VerticalOptions="Center" Scale="1.5"/>
+                                    <Label Grid.Column="1" Text="{Binding GroupName}" 
+                                            d:Text="{Binding .}"
+                                            LineBreakMode="NoWrap"
+                                            VerticalOptions="Center"
+                                            Style="{DynamicResource ListItemTextStyle}" 
+                                            FontSize="16" />
+                                    <Label Grid.Column="2" Text=">"
+                                            TextColor="Gray"
+                                            HorizontalTextAlignment="Center"
+                                       VerticalTextAlignment="Center"     
+                                       Style="{DynamicResource ListItemDetailTextStyle}"
+                                            FontSize="28" />
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="TapGestureRecognizer_Tapped"/>
+                                    </Grid.GestureRecognizers>
+                                </Grid>
+                                <BoxView Grid.Row="2"  HeightRequest="1" BackgroundColor="LightGray"></BoxView>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </RefreshView>
+            <StackLayout Padding="10,0" Grid.Row="2" Orientation="Horizontal" HeightRequest="60" Spacing="10" BackgroundColor="{x:StaticResource SelectionPrimary}" IsVisible="{Binding IsShowSelectMenu}">
+                <Label Text="Tümünü Seç" VerticalTextAlignment="Center" TextColor="White" HorizontalTextAlignment="Center" HorizontalOptions="FillAndExpand" >
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1"/>
+                    </Label.GestureRecognizers>
+                </Label>
+                <BoxView WidthRequest="1" Margin="10" VerticalOptions="FillAndExpand" BackgroundColor="White" />
+                <Label Text="Sil" TextColor="White" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" HorizontalOptions="FillAndExpand" />
+                <BoxView WidthRequest="1" Margin="10" VerticalOptions="FillAndExpand" BackgroundColor="White" />
+                <Label Text="Gönder" TextColor="White" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" HorizontalOptions="FillAndExpand"/>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

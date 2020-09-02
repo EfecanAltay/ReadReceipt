@@ -12,7 +12,13 @@ namespace ReadReceipt.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
-        public IDataStore<Receipt> DataStore => DependencyService.Get<IDataStore<Receipt>>();
+        //public IDataStore<Receipt> DataStore => DependencyService.Get<IDataStore<Receipt>>();
+        public ICachingService CachingService;
+
+        public BaseViewModel()
+        {
+            CachingService = DependencyService.Get<ICachingService>();
+        }
 
         bool isBusy = false;
         public bool IsBusy

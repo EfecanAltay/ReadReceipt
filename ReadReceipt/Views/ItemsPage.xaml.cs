@@ -3,6 +3,7 @@ using System.ComponentModel;
 using Xamarin.Forms;
 using ReadReceipt.Models;
 using ReadReceipt.ViewModels;
+using ReadReceipt.Services;
 
 namespace ReadReceipt.Views
 {
@@ -13,10 +14,11 @@ namespace ReadReceipt.Views
     {
         ItemsViewModel viewModel;
 
-        public ItemsPage()
+        public ItemsPage(ReceiptGroup receiptGroup)
         {
             InitializeComponent();
-            BindingContext = viewModel = new ItemsViewModel();
+            BindingContext = viewModel = new ItemsViewModel(receiptGroup);
+            DependencyService.Get<IReceiptStoreService>().SetReceiptGroup(new ReceiptGroup());
         }
 
         async void OnItemSelected(object sender, EventArgs args)
@@ -34,6 +36,18 @@ namespace ReadReceipt.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
+            viewModel.OnAppearing();
+        }
+
+        private async void EditGroupName_Tapped(object sender, EventArgs e)
+        {
+            string result = await DisplayPromptAsync("Gurup Adı", "Yeni Gurup Adını giriniz",placeholder:"Yeni Gurup İsmi",initialValue: viewModel.ReceiptGroup.GroupName);
+            if (string.IsNullOrEmpty(result) == false)
+                viewModel.ReceiptGroup.GroupName = result;
+            else
+            {
+                await DisplayAlert("Uyarı", "Bir Gurup ismi girmeden gurup oluşturamazsın!","OK");
+            }
         }
     }
 }
