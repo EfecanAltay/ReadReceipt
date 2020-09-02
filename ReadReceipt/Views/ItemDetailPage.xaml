@@ -56,7 +56,7 @@
                 <StackLayout Grid.Column="0" HorizontalOptions="FillAndExpand">
                     <Label Text="V.D" FontSize="Medium" TextColor="DarkGreen" FontAttributes="Bold" />
                     <Frame Padding="5" CornerRadius="10" BackgroundColor="#BEBEBE" >
-                        <Editor TextColor="White" Placeholder="Vergi Dairesi Adı" BackgroundColor="DarkGray" PlaceholderColor="#E4E3E3" Text="{Binding Receipt.Header.VDName,Mode=Default}" HorizontalOptions="FillAndExpand" AutoSize="TextChanges" />
+                        <cutomviews:CustomEditor TextColor="White" Placeholder="Vergi Dairesi Adı" PlaceholderColor="#E4E3E3" Text="{Binding Receipt.Header.VDName,Mode=Default}" HorizontalOptions="FillAndExpand" AutoSize="TextChanges" />
                     </Frame>
                 </StackLayout>
                 <StackLayout Grid.Column="1" HorizontalOptions="FillAndExpand">
