@@ -222,7 +222,7 @@
                 </Grid.ColumnDefinitions>
                 <Button Text="Sonuçları Aktar" Command="{Binding Receipt.Header.MoveResultCommand}"/>
             </Grid>
-            
+
             <Label IsVisible="false" Text="Kalemler :" FontSize="Medium" TextColor="DarkGreen" FontAttributes="Bold"  />
             <ListView IsVisible="false" ItemsSource="{Binding Item.Content.PairingItems}" SelectionMode="None" HasUnevenRows="True" VerticalOptions="Start">
                 <ListView.ItemTemplate>

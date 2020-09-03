@@ -10,7 +10,9 @@ namespace ReadReceipt.ViewModels
 {
     public class ItemsViewModel : BaseViewModel
     {
-        ShareService _shareService => DependencyService.Get<ShareService>();
+        IShareService _shareService => DependencyService.Get<IShareService>();
+        IReceiptStoreService _storeService => DependencyService.Get<IReceiptStoreService>();
+
 
         private ReceiptGroup receiptGroup;
         public ReceiptGroup ReceiptGroup
@@ -45,35 +47,37 @@ namespace ReadReceipt.ViewModels
             }
         }
 
-        public ItemsViewModel(ReceiptGroup receiptGroup)
+        public ItemsViewModel(ReceiptGroup receiptGroup, INavigation nav = null) : base(nav)
         {
             Title = "Fatura Listesi";
             this.ReceiptGroup = receiptGroup;
             MessagingCenter.Subscribe<CameraPage, Receipt>(this, "AddItem", (obj, item) =>
             {
-                 var newItem = item as Receipt;
-                 ReceiptGroup.Receipts.Add(newItem);
+                var newItem = item as Receipt;
+                ReceiptGroup.Receipts.Add(newItem);
             });
 
             ShareAllCommand = new Command(OnShareAll);
             AddItemCommand = new Command<string>(OnAddItem);
             CheckCheckedCommand = new Command(OnCheckCheckedCommand);
+            ChangeGroupNameCommand = new Command<string>(OnChangeGroupNameCommand);
         }
 
         public ICommand ShareAllCommand { get; set; }
         public ICommand AddItemCommand { get; set; }
         public ICommand CheckCheckedCommand { get; set; }
+        public ICommand ChangeGroupNameCommand { get; set; }
 
         public async void OnShareAll()
         {
             if (ReceiptGroup.Receipts != null && ReceiptGroup.Receipts.Any())
-                await _shareService.ShareAsExcell(ReceiptGroup.Receipts);
+                await _shareService.ShareAsExcell(ReceiptGroup);
         }
 
         public void OnAppearing()
         {
             AllSetCheck(false);
-            if(ReceiptGroup != null && ReceiptGroup.Receipts != null)
+            if (ReceiptGroup != null && ReceiptGroup.Receipts != null)
                 IsEmptyList = ReceiptGroup.Receipts.Any() == false;
         }
 
@@ -107,17 +111,28 @@ namespace ReadReceipt.ViewModels
         public void DeleteAllChecked()
         {
             var items = ReceiptGroup.Receipts.Where(x => x.IsChecked == true).ToArray();
-            foreach (var item in items)
+            if (items.Any())
             {
-                ReceiptGroup.Receipts.Remove(item);
+                foreach (var item in items)
+                {
+                    ReceiptGroup.Receipts.Remove(item);
+                }
+                _storeService.SetReceiptGroup(ReceiptGroup);
+                IsEmptyList = ReceiptGroup.Receipts.Any() == false;
             }
-            IsEmptyList = ReceiptGroup.Receipts.Any() == false;
         }
 
         public void OnCheckCheckedCommand()
         {
             if (ReceiptGroup != null && ReceiptGroup.Receipts != null)
                 IsShowSelectMenu = ReceiptGroup.Receipts.Where(x => x.IsChecked).ToArray().Any();
+        }
+
+        public void OnChangeGroupNameCommand(string newName)
+        {
+            _storeService.RemoveReceiptGroup(ReceiptGroup.GroupName);
+            ReceiptGroup.GroupName = newName;
+            _storeService.SetReceiptGroup(ReceiptGroup);
         }
 
         public void OnAddItem(string receiptName)
@@ -127,6 +142,7 @@ namespace ReadReceipt.ViewModels
                 ReceiptGroup.Receipts = new ObservableCollection<Receipt>();
             }
             ReceiptGroup.Receipts.Add(new Receipt() { Header = new ReceiptHeader() { Title = receiptName } });
+            _storeService.SetReceiptGroup(ReceiptGroup);
             IsEmptyList = false;
         }
     }

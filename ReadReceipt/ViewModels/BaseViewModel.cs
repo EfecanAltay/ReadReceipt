@@ -14,10 +14,12 @@ namespace ReadReceipt.ViewModels
     {
         //public IDataStore<Receipt> DataStore => DependencyService.Get<IDataStore<Receipt>>();
         public ICachingService CachingService;
+        INavigation navigation;
 
-        public BaseViewModel()
+        public BaseViewModel(INavigation nav)
         {
             CachingService = DependencyService.Get<ICachingService>();
+            navigation = nav; 
         }
 
         bool isBusy = false;
@@ -34,6 +36,11 @@ namespace ReadReceipt.ViewModels
         {
             get { return title; }
             set { SetProperty(ref title, value); }
+        }
+
+        public void BackNavigate()
+        {
+            navigation.PopAsync();
         }
 
         protected bool SetProperty<T>(ref T backingStore, T value,

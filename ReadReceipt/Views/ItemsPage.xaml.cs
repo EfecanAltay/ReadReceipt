@@ -17,7 +17,7 @@ namespace ReadReceipt.Views
         public ItemsPage(ReceiptGroup receiptGroup)
         {
             InitializeComponent();
-            BindingContext = bindingContext = new ItemsViewModel(receiptGroup);
+            BindingContext = bindingContext = new ItemsViewModel(receiptGroup,Navigation);
             DependencyService.Get<IReceiptStoreService>().SetReceiptGroup(new ReceiptGroup());
         }
 
@@ -25,7 +25,7 @@ namespace ReadReceipt.Views
         {
             var layout = (BindableObject)sender;
             var item = (Receipt)layout.BindingContext;
-            await Navigation.PushAsync(new ItemDetailPage(new ItemDetailViewModel(item, bindingContext)));
+            await Navigation.PushAsync(new ItemDetailPage(new ItemDetailViewModel(item, bindingContext,Navigation)));
         }
 
         async void AddItem_Clicked(object sender, EventArgs e)
@@ -53,11 +53,11 @@ namespace ReadReceipt.Views
         private async void EditGroupName_Tapped(object sender, EventArgs e)
         {
             string result = await DisplayPromptAsync("Gurup Adı", "Yeni Gurup Adını giriniz",placeholder:"Yeni Gurup İsmi",initialValue: bindingContext.ReceiptGroup.GroupName);
-            if (string.IsNullOrEmpty(result) == false)
-                bindingContext.ReceiptGroup.GroupName = result;
+            if (string.IsNullOrEmpty(result) == false && bindingContext.ReceiptGroup.GroupName.Equals(result) == false)
+                bindingContext.ChangeGroupNameCommand.Execute(result);
             else
             {
-                await DisplayAlert("Uyarı", "Bir Gurup ismi girmeden gurup oluşturamazsın!","OK");
+                await DisplayAlert("Uyarı", "Bir Gurup ismi girmeden gurup oluşturamazsın!", "OK");
             }
         }
 

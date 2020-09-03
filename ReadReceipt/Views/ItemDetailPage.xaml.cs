@@ -21,6 +21,12 @@ namespace ReadReceipt.Views
             BindingContext = this.viewModel = viewModel;
         }
 
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            viewModel.OnDisAppearing();
+        }
+
         private void Editor_Focused(object sender, FocusEventArgs e)
         {
 

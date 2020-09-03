@@ -15,7 +15,7 @@ namespace ReadReceipt.Views
         public ReceiptGroupListPage()
         {
             InitializeComponent();
-            BindingContext = bindingContext = new ReceiptGroupListPageVM();
+            BindingContext = bindingContext = new ReceiptGroupListPageVM(Navigation);
             bindingContext.PropertyChanged += BindingContext_PropertyChanged;
         }
 

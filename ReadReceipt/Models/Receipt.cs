@@ -50,35 +50,6 @@ namespace ReadReceipt.Models
             Header = header;
             Content = content;
         }
-
-        public static string CSVHeaderFormat()
-        {
-            return "Tarih,Saat,FisNo,ŞirketAdi,VD Adi,VD No,Matrah,KDV,Toplam";
-        }
-
-        public string ToCSVFormat()
-        {
-            StringBuilder builder = new StringBuilder();
-            builder.Append(Header.Date.ToString("dd/MM/yyyy"));
-            builder.Append(";");
-            builder.Append(Header.Time.ToString("t", DateTimeFormatInfo.InvariantInfo));
-            builder.Append(";");
-            builder.Append(Header.No);
-            builder.Append(";");
-            builder.Append(Header.Title);
-            builder.Append(";");
-            builder.Append(Header.VDName);
-            builder.Append(";");
-            builder.Append(Header.VD);
-            builder.Append(";");
-            builder.Append(Header.Matrah);
-            builder.Append(";");
-            builder.Append(Header.KDV);
-            builder.Append(";");
-            builder.Append(Header.Total);
-            builder.Append(";");
-            return builder.ToString();
-        }
         #endregion
     }
 
@@ -242,7 +213,7 @@ namespace ReadReceipt.Models
             }
         }
 
-        public ObservableCollection<KDVVal> kdv1Items;
+        private ObservableCollection<KDVVal> kdv1Items;
         public ObservableCollection<KDVVal> KDV1Items
         {
             get { return kdv1Items; }
@@ -253,7 +224,7 @@ namespace ReadReceipt.Models
             }
         }
 
-        public ObservableCollection<KDVVal> kdv8Items;
+        private ObservableCollection<KDVVal> kdv8Items;
         public ObservableCollection<KDVVal> KDV8Items
         {
             get { return kdv8Items; }
@@ -264,7 +235,7 @@ namespace ReadReceipt.Models
             }
         }
 
-        public ObservableCollection<KDVVal> kdv18Items;
+        private ObservableCollection<KDVVal> kdv18Items;
         public ObservableCollection<KDVVal> KDV18Items
         {
             get { return kdv18Items; }

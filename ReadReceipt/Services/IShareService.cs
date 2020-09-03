@@ -6,6 +6,7 @@ namespace ReadReceipt.Services
 {
     public interface IShareService
     {
-        Task ShareAsExcell(IEnumerable<Receipt> receipts, IEnumerable<string> recipients = null);
+        Task ShareAsExcell(ReceiptGroup receipts, IEnumerable<string> recipients = null);
+        Task ShareAsExcell(IEnumerable<ReceiptGroup> receipts, IEnumerable<string> recipients = null);
     }
 }

@@ -9,5 +9,7 @@ namespace ReadReceipt.Services
         void GetAllReceiptGroup(Action<IEnumerable<ReceiptGroup>> success);
         void GetReceiptGroup(string groupName, Action<ReceiptGroup> success);
         bool SetReceiptGroup(ReceiptGroup receiptGroup);
+        bool RemoveReceiptGroup(string groupName);
+        bool RemoveReceiptGroup(IEnumerable<string> groupNames);
     }
 }

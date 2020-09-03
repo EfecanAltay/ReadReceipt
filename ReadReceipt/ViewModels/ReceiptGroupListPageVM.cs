@@ -9,7 +9,8 @@ namespace ReadReceipt.ViewModels
 {
     public class ReceiptGroupListPageVM : BaseViewModel
     {
-        ShareService _shareService => DependencyService.Get<ShareService>();
+        IShareService _shareService => DependencyService.Get<IShareService>();
+        IReceiptStoreService _storeService => DependencyService.Get<IReceiptStoreService>();
 
         private ObservableCollection<ReceiptGroup> receiptGroupList;
         public ObservableCollection<ReceiptGroup> ReceiptGroupList
@@ -45,7 +46,7 @@ namespace ReadReceipt.ViewModels
         }
 
         private ReceiptGroup[] checkedList;
-        public ReceiptGroupListPageVM()
+        public ReceiptGroupListPageVM(INavigation nav = null) : base(nav)
         {
             ReceiptGroupList = new ObservableCollection<ReceiptGroup>();
             AddItemCommand = new Command<string>(OnAddItem);
@@ -53,10 +54,21 @@ namespace ReadReceipt.ViewModels
             ShareAllCommand = new Command(OnShareAll);
         }
 
+        private bool firstAppearing = true;
         public void OnAppearing()
         {
             AllSetCheck(false);
-            IsEmptyList = ReceiptGroupList.Any() == false;
+            if (firstAppearing)
+            {
+                firstAppearing = false;
+                _storeService.GetAllReceiptGroup((receiptGroups) => {
+                    if(receiptGroups != null)
+                    {
+                        ReceiptGroupList = new ObservableCollection<ReceiptGroup>(receiptGroups);
+                    }
+                    IsEmptyList = ReceiptGroupList.Any() == false;
+                });
+            }
         }
 
         public ICommand CheckCheckedCommand { get; set; }
@@ -65,7 +77,9 @@ namespace ReadReceipt.ViewModels
 
         public void OnAddItem(string name)
         {
-            ReceiptGroupList.Add(new ReceiptGroup() { GroupName = name });
+            var newReceiptGroup = new ReceiptGroup() { GroupName = name };
+            ReceiptGroupList.Add(newReceiptGroup);
+            _storeService.SetReceiptGroup(newReceiptGroup);
             IsEmptyList = false;
         }
 
@@ -105,11 +119,15 @@ namespace ReadReceipt.ViewModels
         public void DeleteAllChecked()
         {
             var items = ReceiptGroupList.Where(x => x.IsChecked == true).ToArray();
-            foreach (var item in items)
+            if (items.Any())
             {
-                ReceiptGroupList.Remove(item);
+                _storeService.RemoveReceiptGroup(items.Select(x => x.GroupName).ToArray());
+                foreach (var item in items)
+                {
+                    ReceiptGroupList.Remove(item);
+                }
+                IsEmptyList = ReceiptGroupList.Any() == false;
             }
-            IsEmptyList = ReceiptGroupList.Any() == false;
         }
 
         public void OnCheckCheckedCommand()

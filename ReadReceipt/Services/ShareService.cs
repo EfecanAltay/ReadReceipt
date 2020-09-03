@@ -17,7 +17,7 @@ namespace ReadReceipt.Services
 {
     public class ShareService : IShareService
     {
-        public async Task ShareAsExcell(IEnumerable<Receipt> receipts, IEnumerable<string> recipients = null)
+        public async Task ShareAsExcell(ReceiptGroup receiptGroup, IEnumerable<string> recipients = null)
         {
 
             try
@@ -29,19 +29,88 @@ namespace ReadReceipt.Services
                     To = recipients?.ToList(),
                 };
 
-                var fn = "Receipts.csv";
-                var file = Path.Combine(FileSystem.CacheDirectory, fn);
-                StringBuilder builder = new StringBuilder();
-                builder.AppendLine(Receipt.CSVHeaderFormat());
-                receipts.ForEach(receipt =>
+                using (ExcelEngine excelEngine = new ExcelEngine())
                 {
-                    builder.AppendLine(receipt.ToCSVFormat());
-                }); ;
+                    excelEngine.Excel.DefaultVersion = ExcelVersion.Excel2013;
+                    //Create a workbook with a worksheet
+                    IWorkbook workbook = excelEngine.Excel.Workbooks.Create(1);
 
-                File.WriteAllText(file, builder.ToString());
+                    //Access first worksheet from the workbook instance.
+                    IWorksheet worksheet = workbook.Worksheets[0];
 
-                message.Attachments.Add(new EmailAttachment(file));
-                await Email.ComposeAsync(message);
+                    IStyle gheaderStyle = workbook.Styles.Add("GHeaderStyle");
+                    gheaderStyle.BeginUpdate();
+                    gheaderStyle.Color = Syncfusion.Drawing.Color.FromArgb(255, 174, 33);
+                    gheaderStyle.Font.Bold = true;
+                    gheaderStyle.Borders[ExcelBordersIndex.EdgeLeft].LineStyle = ExcelLineStyle.Thin;
+                    gheaderStyle.Borders[ExcelBordersIndex.EdgeRight].LineStyle = ExcelLineStyle.Thin;
+                    gheaderStyle.Borders[ExcelBordersIndex.EdgeTop].LineStyle = ExcelLineStyle.Thin;
+                    gheaderStyle.Borders[ExcelBordersIndex.EdgeBottom].LineStyle = ExcelLineStyle.Thin;
+                    gheaderStyle.EndUpdate();
+
+                    IStyle headerStyle = workbook.Styles.Add("HeaderStyle");
+                    headerStyle.BeginUpdate();
+                    headerStyle.Color = Syncfusion.Drawing.Color.FromArgb(102, 183, 254);
+                    headerStyle.Font.Bold = true;
+                    headerStyle.Borders[ExcelBordersIndex.EdgeLeft].LineStyle = ExcelLineStyle.Thin;
+                    headerStyle.Borders[ExcelBordersIndex.EdgeRight].LineStyle = ExcelLineStyle.Thin;
+                    headerStyle.Borders[ExcelBordersIndex.EdgeTop].LineStyle = ExcelLineStyle.Thin;
+                    headerStyle.Borders[ExcelBordersIndex.EdgeBottom].LineStyle = ExcelLineStyle.Thin;
+                    headerStyle.EndUpdate();
+
+                    int row = 1;
+                    worksheet.Range[row, 1, row, 9].Merge();
+                    worksheet.Range[row, 1].CellStyle = gheaderStyle;
+                    worksheet.Range[row, 1].Text = receiptGroup.GroupName;
+                    row++;
+                    worksheet.Range[row, 1, row, 9].CellStyle = headerStyle;
+                    worksheet.Range[row, 1].Text = "Tarih";
+                    worksheet.Range[row, 2].Text = "Saat";
+                    worksheet.Range[row, 3].Text = "Fiş No";
+                    worksheet.Range[row, 4].Text = "Şirket Adı";
+                    worksheet.Range[row, 5].Text = "VD Adı";
+                    worksheet.Range[row, 6].Text = "VD No";
+                    worksheet.Range[row, 7].Text = "Matrah";
+                    worksheet.Range[row, 8].Text = "KDV";
+                    worksheet.Range[row, 9].Text = "Toplam";
+                    row++;
+                    if (receiptGroup.Receipts != null && receiptGroup.Receipts.Any())
+                    {
+                        receiptGroup.Receipts.ForEach(receipt =>
+                        {
+                            worksheet.Range[row, 1].Text = receipt.Header.Date.ToString("dd/MM/yyyy");
+                            worksheet.Range[row, 2].Text = receipt.Header.Time.ToString("t", DateTimeFormatInfo.InvariantInfo);
+                            worksheet.Range[row, 3].Text = receipt.Header.No;
+                            worksheet.Range[row, 4].Text = receipt.Header.Title;
+                            worksheet.Range[row, 5].Text = receipt.Header.VDName;
+                            worksheet.Range[row, 6].Text = receipt.Header.VD;
+                            worksheet.Range[row, 7].Text = receipt.Header.Matrah.ToString();
+                            worksheet.Range[row, 8].Text = receipt.Header.KDV.ToString();
+                            worksheet.Range[row, 9].Text = receipt.Header.Total.ToString();
+                            row++;
+                        });
+                    }
+                    else
+                    {
+                        worksheet.Range[row, 1, row, 9].Merge();
+                        worksheet.Range[row, 1].Text = "Fiş Yok";
+                    }
+                    //Save the workbook to stream in xlsx format. 
+                    MemoryStream stream = new MemoryStream();
+                    workbook.SaveAs(stream);
+                    workbook.Close();
+
+                    var fn = "Receipts.xlsx";
+                    var file = Path.Combine(FileSystem.CacheDirectory, fn);
+
+                    using (var fileStream = File.Create(file))
+                    {
+                        stream.Seek(0, SeekOrigin.Begin);
+                        stream.CopyTo(fileStream);
+                    }
+                    message.Attachments.Add(new EmailAttachment(file));
+                    await Email.ComposeAsync(message);
+                }
             }
             catch (FeatureNotSupportedException fbsEx)
             {

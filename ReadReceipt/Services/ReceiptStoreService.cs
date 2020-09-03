@@ -2,6 +2,7 @@
 using ReadReceipt.Services;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xamarin.Forms;
 
 [assembly: Dependency(typeof(ReceiptStoreService))]
@@ -30,6 +31,20 @@ namespace ReadReceipt.Services
         {
             if (string.IsNullOrEmpty(receiptGroup.GroupName)) return false;
             cachingService.Set<ReceiptGroup>(receiptGroup.GroupName,receiptGroup);
+            return true;
+        }
+
+        public bool RemoveReceiptGroup(string groupName)
+        {
+            if (string.IsNullOrEmpty(groupName)) return false;
+            cachingService.Remove<ReceiptGroup>(groupName);
+            return true;
+        }
+
+        public bool RemoveReceiptGroup(IEnumerable<string> groupNames)
+        {
+            if (groupNames == null || (groupNames != null && groupNames.Any() == false)) return false;
+            cachingService.Remove<ReceiptGroup>(groupNames);
             return true;
         }
     }

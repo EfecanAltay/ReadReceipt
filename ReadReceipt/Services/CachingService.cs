@@ -49,6 +49,16 @@ namespace ReadReceipt.Services
             return localCache.Value.InsertObject<T>(key, obj);
         }
 
+        public IObservable<Unit> Remove<T>(string key)
+        {
+            return localCache.Value.InvalidateObject<T>(key);
+        }
+
+        public IObservable<Unit> Remove<T>(IEnumerable<string> keys)
+        {
+            return localCache.Value.InvalidateObjects<T>(keys);
+        }
+
         public void ShutDown()
         {
             localCache.Value.Shutdown.Wait();
