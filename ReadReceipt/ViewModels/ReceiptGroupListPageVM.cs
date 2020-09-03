@@ -130,6 +130,15 @@ namespace ReadReceipt.ViewModels
             }
         }
 
+        public async void ShareAllChecked()
+        {
+            var items = ReceiptGroupList.Where(x => x.IsChecked == true).ToArray();
+            if (items.Any())
+            {
+                await _shareService.ShareAsExcell(items);
+            }
+        }
+
         public void OnCheckCheckedCommand()
         {
             checkedList = ReceiptGroupList.Where(x => x.IsChecked).ToArray();

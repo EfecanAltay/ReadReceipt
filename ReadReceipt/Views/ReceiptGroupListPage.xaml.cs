@@ -91,5 +91,10 @@ namespace ReadReceipt.Views
             if (result)
                 bindingContext.DeleteAllChecked();
         }
+
+        private void TapGestureRecognizerShareSelected_Tapped(object sender, System.EventArgs e)
+        {
+            bindingContext.ShareAllChecked();
+        }
     }
 }

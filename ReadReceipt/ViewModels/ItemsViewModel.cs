@@ -135,6 +135,19 @@ namespace ReadReceipt.ViewModels
             _storeService.SetReceiptGroup(ReceiptGroup);
         }
 
+        public async void ShareAllChecked()
+        {
+            var items = ReceiptGroup.Receipts.Where(x => x.IsChecked == true).ToArray();
+            if (items.Any())
+            {
+                await _shareService.ShareAsExcell(new ReceiptGroup()
+                {
+                    GroupName = ReceiptGroup.GroupName,
+                    Receipts = new ObservableCollection<Receipt>(items)
+                });
+            }
+        }
+
         public void OnAddItem(string receiptName)
         {
             if (ReceiptGroup.Receipts == null)
