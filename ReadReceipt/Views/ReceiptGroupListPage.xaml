@@ -11,6 +11,7 @@
         <ToolbarItem Text="Gurup Ekle" Clicked="ToolbarItem_Clicked" />
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
+        <Grid>
         <StackLayout Spacing="0">
             <RefreshView  IsRefreshing="{Binding IsBusy, Mode=Default}" Command="{Binding LoadItemsCommand}">
                 <CollectionView
@@ -64,5 +65,10 @@
                 <Label Text="Gönder" TextColor="White" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" HorizontalOptions="FillAndExpand"/>
             </StackLayout>
         </StackLayout>
+        <StackLayout IsVisible="{Binding IsEmptyList}">
+            <Image x:Name="helper" HorizontalOptions="EndAndExpand" Source="ic_helper.png" TranslationX="-50" TranslationY="10" />
+            <Label FontSize="24" TextColor="{x:StaticResource NavigationPrimary}" Text="Listenize Gurup Ekleyin" HorizontalTextAlignment="Center" VerticalOptions="FillAndExpand" VerticalTextAlignment="Center"/>
+        </StackLayout>
+        </Grid>
     </ContentPage.Content>
 </ContentPage>

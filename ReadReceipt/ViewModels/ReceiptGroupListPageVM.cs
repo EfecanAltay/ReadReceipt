@@ -19,6 +19,17 @@ namespace ReadReceipt.ViewModels
             }
         }
 
+        private bool isEmptyList;
+        public bool IsEmptyList
+        {
+            get { return isEmptyList; }
+            set
+            {
+                isEmptyList = value;
+                OnPropertyChanged(nameof(IsEmptyList));
+            }
+        }
+
         private bool isShowSelectMenu;
         public bool IsShowSelectMenu
         {
@@ -41,6 +52,7 @@ namespace ReadReceipt.ViewModels
         public void OnAppearing()
         {
             AllSetCheck(false);
+            IsEmptyList = ReceiptGroupList.Any() == false;
         }
 
         public ICommand CheckCheckedCommand { get; set; }
@@ -49,6 +61,7 @@ namespace ReadReceipt.ViewModels
         public void OnAddItem(string name)
         {
             ReceiptGroupList.Add(new ReceiptGroup() { GroupName = name });
+            IsEmptyList = false;
         }
 
         public void AllSetCheck(bool check)

@@ -1,5 +1,7 @@
 ﻿using ReadReceipt.Models;
 using ReadReceipt.ViewModels;
+using System;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -9,23 +11,57 @@ namespace ReadReceipt.Views
     public partial class ReceiptGroupListPage : ContentPage
     {
         ReceiptGroupListPageVM bindingContext;
+        bool HelperAnimTaskRunning = true;
         public ReceiptGroupListPage()
         {
             InitializeComponent();
             BindingContext = bindingContext = new ReceiptGroupListPageVM();
+            bindingContext.PropertyChanged += BindingContext_PropertyChanged;
+        }
+
+        private void BindingContext_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName.Equals(nameof(bindingContext.IsEmptyList)))
+            {
+                HelperAnimTaskRunning = true;
+                if (bindingContext.IsEmptyList)
+                {
+                    Task.Run(async () =>
+                    {
+                        while (true)
+                        {
+                            await helper.TranslateTo(-50, 0, 500, Easing.CubicIn);
+                            await helper.TranslateTo(-50, 50, 500, Easing.CubicOut);
+                            if (HelperAnimTaskRunning == false)
+                                break;
+                        }
+                    });
+                }
+                else
+                {
+                    HelperAnimTaskRunning = false;
+                }
+            }
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            HelperAnimTaskRunning = false;
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
             bindingContext.OnAppearing();
+            HelperAnimTaskRunning = true;
         }
 
         private async void TapGestureRecognizer_Tapped(object sender, System.EventArgs e)
         {
             var layout = (BindableObject)sender;
             var item = (ReceiptGroup)layout.BindingContext;
-            await Navigation.PushAsync(new ItemsPage(item),false);
+            await Navigation.PushAsync(new ItemsPage(item), false);
         }
 
         private async void ToolbarItem_Clicked(object sender, System.EventArgs e)
