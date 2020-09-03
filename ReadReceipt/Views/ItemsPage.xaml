@@ -11,7 +11,7 @@
 
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Gönder" Command="{Binding SendMailCommand}" Order="Secondary" />
-        <ToolbarItem Text="Fiş Ekle" Command="{Binding AddItemCommand}" />
+        <ToolbarItem Text="Fiş Ekle" Clicked="AddItem_Clicked" />
     </ContentPage.ToolbarItems>
     <StackLayout Spacing="0">
         <Grid BackgroundColor="LightGray" Padding="15,0">
@@ -36,17 +36,22 @@
                             <Grid Grid.Row="1" HorizontalOptions="FillAndExpand">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="2*"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <CheckBox Grid.Column="0" IsChecked="{Binding IsChecked}" HorizontalOptions="CenterAndExpand" VerticalOptions="Center" Scale="1.5"/>
-                                <Label Grid.Column="1" Text="{Binding Header.Title}" 
-                                            d:Text="{Binding .}"
+                                <CheckBox Grid.Column="0" IsChecked="{Binding IsChecked}" CheckedChanged="CheckBox_CheckedChanged" HorizontalOptions="CenterAndExpand" VerticalOptions="Center" Scale="1.5"/>
+                                <Label Grid.Column="1" Text="{Binding Header.No}"
                                             LineBreakMode="NoWrap"
                                        VerticalOptions="Center"
                                             Style="{DynamicResource ListItemTextStyle}" 
                                             FontSize="16" />
-                                <Label Grid.Column="2" Text=">"
+                                <Label Grid.Column="2" Text="{Binding Header.Title}"
+                                            LineBreakMode="NoWrap"
+                                       VerticalOptions="Center"
+                                            Style="{DynamicResource ListItemTextStyle}" 
+                                            FontSize="16" />
+                                <Label Grid.Column="3" Text=">"
                                             TextColor="Gray"
                                             HorizontalTextAlignment="Center"
                                        VerticalTextAlignment="Center"     
@@ -61,6 +66,21 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-        </RefreshView> 
+        </RefreshView>
+        <StackLayout Padding="10,0" Grid.Row="2" Orientation="Horizontal" HeightRequest="60" Spacing="10" BackgroundColor="{x:StaticResource SelectionPrimary}" IsVisible="{Binding IsShowSelectMenu}">
+            <Label Text="Tümünü Seç" VerticalTextAlignment="Center" TextColor="White" HorizontalTextAlignment="Center" HorizontalOptions="FillAndExpand" >
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizerSelectAll_Tapped"/>
+                </Label.GestureRecognizers>
+            </Label>
+            <BoxView WidthRequest="1" Margin="10" VerticalOptions="FillAndExpand" BackgroundColor="White" />
+            <Label Text="Sil" TextColor="White" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" HorizontalOptions="FillAndExpand"  >
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizerSelectDelete_Tapped"/>
+                </Label.GestureRecognizers>
+            </Label>
+            <BoxView WidthRequest="1" Margin="10" VerticalOptions="FillAndExpand" BackgroundColor="White" />
+            <Label Text="Gönder" TextColor="White" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" HorizontalOptions="FillAndExpand"/>
+        </StackLayout>
     </StackLayout>
 </ContentPage>

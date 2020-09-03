@@ -60,7 +60,11 @@
                     </Label.GestureRecognizers>
                 </Label>
                 <BoxView WidthRequest="1" Margin="10" VerticalOptions="FillAndExpand" BackgroundColor="White" />
-                <Label Text="Sil" TextColor="White" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" HorizontalOptions="FillAndExpand" />
+                    <Label Text="Sil" TextColor="White" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" HorizontalOptions="FillAndExpand"  >
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="TapGestureRecognizerDelete_Tapped"/>
+                        </Label.GestureRecognizers>
+                    </Label>
                 <BoxView WidthRequest="1" Margin="10" VerticalOptions="FillAndExpand" BackgroundColor="White" />
                 <Label Text="Gönder" TextColor="White" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" HorizontalOptions="FillAndExpand"/>
             </StackLayout>

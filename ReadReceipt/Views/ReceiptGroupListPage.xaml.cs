@@ -53,8 +53,8 @@ namespace ReadReceipt.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            bindingContext.OnAppearing();
             HelperAnimTaskRunning = true;
+            bindingContext.OnAppearing();
         }
 
         private async void TapGestureRecognizer_Tapped(object sender, System.EventArgs e)
@@ -83,6 +83,13 @@ namespace ReadReceipt.Views
         private void TapGestureRecognizer_Tapped_1(object sender, System.EventArgs e)
         {
             bindingContext.AllSetCheckToggle();
+        }
+
+        private async void TapGestureRecognizerDelete_Tapped(object sender, System.EventArgs e)
+        {
+            bool result = await DisplayAlert("Sil", "Seçilenler Silinicektir. Eminmisiniz ?","Evet","İptal");
+            if (result)
+                bindingContext.DeleteAllChecked();
         }
     }
 }

@@ -91,6 +91,16 @@ namespace ReadReceipt.ViewModels
             }
         }
 
+        public void DeleteAllChecked()
+        {
+            var items = ReceiptGroupList.Where(x => x.IsChecked == true).ToArray();
+            foreach (var item in items)
+            {
+                ReceiptGroupList.Remove(item);
+            }
+            IsEmptyList = ReceiptGroupList.Any() == false;
+        }
+
         public void OnCheckCheckedCommand()
         {
             checkedList = ReceiptGroupList.Where(x => x.IsChecked).ToArray();

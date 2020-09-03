@@ -27,6 +27,28 @@ namespace ReadReceipt.ViewModels
             }
         }
 
+        private bool isEmptyList;
+        public bool IsEmptyList
+        {
+            get { return isEmptyList; }
+            set
+            {
+                isEmptyList = value;
+                OnPropertyChanged(nameof(IsEmptyList));
+            }
+        }
+
+        private bool isShowSelectMenu;
+        public bool IsShowSelectMenu
+        {
+            get { return isShowSelectMenu; }
+            set
+            {
+                isShowSelectMenu = value;
+                OnPropertyChanged(nameof(IsShowSelectMenu));
+            }
+        }
+
         public ItemsViewModel(ReceiptGroup receiptGroup)
         {
             Title = "Fatura Listesi";
@@ -38,11 +60,13 @@ namespace ReadReceipt.ViewModels
             });
             
             SendMailCommand = new Command(OnSendMail);
-            AddItemCommand = new Command(OnAddItem);
+            AddItemCommand = new Command<string>(OnAddItem);
+            CheckCheckedCommand = new Command(OnCheckCheckedCommand);
         }
 
         public ICommand SendMailCommand { get; set; }
         public ICommand AddItemCommand { get; set; }
+        public ICommand CheckCheckedCommand { get; set; }
 
         public async void OnSendMail()
         {
@@ -53,6 +77,8 @@ namespace ReadReceipt.ViewModels
         public void OnAppearing()
         {
             AllSetCheck(false);
+            if(ReceiptGroup != null && ReceiptGroup.Receipts != null)
+                IsEmptyList = ReceiptGroup.Receipts.Any() == false;
         }
 
         public void AllSetCheck(bool check)
@@ -63,13 +89,49 @@ namespace ReadReceipt.ViewModels
             }
         }
 
-        public void OnAddItem()
+        public void AllSetCheckToggle()
+        {
+            var items = ReceiptGroup.Receipts.Where(x => x.IsChecked == false);
+            if (items.Any())
+            {
+                foreach (var receiptGroup in ReceiptGroup.Receipts)
+                {
+                    receiptGroup.IsChecked = true;
+                }
+            }
+            else
+            {
+                foreach (var receiptGroup in ReceiptGroup.Receipts)
+                {
+                    receiptGroup.IsChecked = false;
+                }
+            }
+        }
+
+        public void DeleteAllChecked()
+        {
+            var items = ReceiptGroup.Receipts.Where(x => x.IsChecked == true).ToArray();
+            foreach (var item in items)
+            {
+                ReceiptGroup.Receipts.Remove(item);
+            }
+            IsEmptyList = ReceiptGroup.Receipts.Any() == false;
+        }
+
+        public void OnCheckCheckedCommand()
+        {
+            if (ReceiptGroup != null && ReceiptGroup.Receipts != null)
+                IsShowSelectMenu = ReceiptGroup.Receipts.Where(x => x.IsChecked).ToArray().Any();
+        }
+
+        public void OnAddItem(string receiptName)
         {
             if (ReceiptGroup.Receipts == null)
             {
                 ReceiptGroup.Receipts = new ObservableCollection<Receipt>();
             }
-            ReceiptGroup.Receipts.Add(new Receipt() { Header = new ReceiptHeader() { Title = "Yeni Fiş" } });
+            ReceiptGroup.Receipts.Add(new Receipt() { Header = new ReceiptHeader() { Title = receiptName } });
+            IsEmptyList = false;
         }
 
         public async Task SendEmail(IEnumerable<Receipt> receipts, List<string> recipients)
