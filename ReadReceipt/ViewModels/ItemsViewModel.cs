@@ -2,20 +2,16 @@
 using Xamarin.Forms;
 using ReadReceipt.Models;
 using ReadReceipt.Views;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using Xamarin.Essentials;
-using System.IO;
-using System.Text;
-using Xamarin.Forms.Internals;
-using System;
 using System.Windows.Input;
 using System.Linq;
+using ReadReceipt.Services;
 
 namespace ReadReceipt.ViewModels
 {
     public class ItemsViewModel : BaseViewModel
     {
+        ShareService _shareService => DependencyService.Get<ShareService>();
+
         private ReceiptGroup receiptGroup;
         public ReceiptGroup ReceiptGroup
         {
@@ -58,20 +54,20 @@ namespace ReadReceipt.ViewModels
                  var newItem = item as Receipt;
                  ReceiptGroup.Receipts.Add(newItem);
             });
-            
-            SendMailCommand = new Command(OnSendMail);
+
+            ShareAllCommand = new Command(OnShareAll);
             AddItemCommand = new Command<string>(OnAddItem);
             CheckCheckedCommand = new Command(OnCheckCheckedCommand);
         }
 
-        public ICommand SendMailCommand { get; set; }
+        public ICommand ShareAllCommand { get; set; }
         public ICommand AddItemCommand { get; set; }
         public ICommand CheckCheckedCommand { get; set; }
 
-        public async void OnSendMail()
+        public async void OnShareAll()
         {
             if (ReceiptGroup.Receipts != null && ReceiptGroup.Receipts.Any())
-                await SendEmail(ReceiptGroup.Receipts, null);
+                await _shareService.ShareAsExcell(ReceiptGroup.Receipts);
         }
 
         public void OnAppearing()
@@ -132,41 +128,6 @@ namespace ReadReceipt.ViewModels
             }
             ReceiptGroup.Receipts.Add(new Receipt() { Header = new ReceiptHeader() { Title = receiptName } });
             IsEmptyList = false;
-        }
-
-        public async Task SendEmail(IEnumerable<Receipt> receipts, List<string> recipients)
-        {
-            try
-            {
-                var message = new EmailMessage
-                {
-                    Subject = "FişMatik - Okunan Fişler",
-                    Body = "Okunan Fişler Ektedir.",
-                    To = recipients,
-                };
-
-                var fn = "Receipts.csv";
-                var file = Path.Combine(FileSystem.CacheDirectory, fn);
-                StringBuilder builder = new StringBuilder();
-                builder.AppendLine(Receipt.CSVHeaderFormat());
-                receipts.ForEach(receipt =>
-                {
-                    builder.AppendLine(receipt.ToCSVFormat());
-                }); ;
-
-                File.WriteAllText(file, builder.ToString());
-
-                message.Attachments.Add(new EmailAttachment(file));
-                await Email.ComposeAsync(message);
-            }
-            catch (FeatureNotSupportedException fbsEx)
-            {
-                // Email is not supported on this device
-            }
-            catch (Exception ex)
-            {
-                // Some other exception occurred
-            }
         }
     }
 }

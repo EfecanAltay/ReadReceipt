@@ -60,23 +60,23 @@ namespace ReadReceipt.Models
         {
             StringBuilder builder = new StringBuilder();
             builder.Append(Header.Date.ToString("dd/MM/yyyy"));
-            builder.Append(",");
+            builder.Append(";");
             builder.Append(Header.Time.ToString("t", DateTimeFormatInfo.InvariantInfo));
-            builder.Append(",");
+            builder.Append(";");
             builder.Append(Header.No);
-            builder.Append(",");
+            builder.Append(";");
             builder.Append(Header.Title);
-            builder.Append(",");
+            builder.Append(";");
             builder.Append(Header.VDName);
-            builder.Append(",");
+            builder.Append(";");
             builder.Append(Header.VD);
-            builder.Append(",");
+            builder.Append(";");
             builder.Append(Header.Matrah);
-            builder.Append(",");
+            builder.Append(";");
             builder.Append(Header.KDV);
-            builder.Append(",");
+            builder.Append(";");
             builder.Append(Header.Total);
-            builder.Append(",");
+            builder.Append(";");
             return builder.ToString();
         }
         #endregion

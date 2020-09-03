@@ -10,7 +10,7 @@
              x:Name="BrowseItemsPage">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Gönder" Command="{Binding SendMailCommand}" Order="Secondary" />
+        <ToolbarItem Text="Gönder" Command="{Binding ShareAllCommand}" Order="Secondary" />
         <ToolbarItem Text="Fiş Ekle" Clicked="AddItem_Clicked" />
     </ContentPage.ToolbarItems>
     <StackLayout Spacing="0">

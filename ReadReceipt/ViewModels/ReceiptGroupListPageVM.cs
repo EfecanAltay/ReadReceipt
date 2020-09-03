@@ -3,11 +3,14 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using System.Linq;
 using Xamarin.Forms;
+using ReadReceipt.Services;
 
 namespace ReadReceipt.ViewModels
 {
     public class ReceiptGroupListPageVM : BaseViewModel
     {
+        ShareService _shareService => DependencyService.Get<ShareService>();
+
         private ObservableCollection<ReceiptGroup> receiptGroupList;
         public ObservableCollection<ReceiptGroup> ReceiptGroupList
         {
@@ -47,6 +50,7 @@ namespace ReadReceipt.ViewModels
             ReceiptGroupList = new ObservableCollection<ReceiptGroup>();
             AddItemCommand = new Command<string>(OnAddItem);
             CheckCheckedCommand = new Command(OnCheckCheckedCommand);
+            ShareAllCommand = new Command(OnShareAll);
         }
 
         public void OnAppearing()
@@ -57,11 +61,18 @@ namespace ReadReceipt.ViewModels
 
         public ICommand CheckCheckedCommand { get; set; }
         public ICommand AddItemCommand { get; set; }
-        
+        public ICommand ShareAllCommand { get; set; }
+
         public void OnAddItem(string name)
         {
             ReceiptGroupList.Add(new ReceiptGroup() { GroupName = name });
             IsEmptyList = false;
+        }
+
+        public async void OnShareAll()
+        {
+            if (ReceiptGroupList != null && ReceiptGroupList.Any())
+                await _shareService.ShareAsExcell(ReceiptGroupList);
         }
 
         public void AllSetCheck(bool check)

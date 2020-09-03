@@ -7,7 +7,7 @@
              Title="Fiş Gurupları"
              x:Class="ReadReceipt.Views.ReceiptGroupListPage">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Gönder" Command="{Binding SendMailCommand}" Order="Secondary" />
+        <ToolbarItem Text="Gönder" Command="{Binding ShareAllCommand}" Order="Secondary" />
         <ToolbarItem Text="Gurup Ekle" Clicked="ToolbarItem_Clicked" />
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
