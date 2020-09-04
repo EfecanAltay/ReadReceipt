@@ -54,7 +54,7 @@ namespace ReadReceipt.ViewModels
             MessagingCenter.Subscribe<CameraPage, Receipt>(this, "AddItem", (obj, item) =>
             {
                 var newItem = item as Receipt;
-                ReceiptGroup.Receipts.Add(newItem);
+                //ReceiptGroup.Receipts.Add(newItem);
             });
 
             ShareAllCommand = new Command(OnShareAll);

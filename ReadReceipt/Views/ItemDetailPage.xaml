@@ -246,6 +246,10 @@
                 </ListView.ItemTemplate>
             </ListView>
             <Button IsVisible="false" Text=" + Satır ekle" Command="{Binding Source={x:Reference ItemDetailPageKey},Path='BindingContext.Item.AddItem' }"/>
+            <StackLayout IsVisible="{Binding IsCamEditMode}">
+                <Picker x:Name="ReceiptGroupPicker"  ItemsSource="{Binding ReceiptGroups}" SelectedIndexChanged="Picker_SelectedIndexChanged" />
+                <Button Text="Kaydet" Command="{Binding SaveCommand}" />
+            </StackLayout>
         </StackLayout>
     </ScrollView>
 </ContentPage>

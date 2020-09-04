@@ -2,6 +2,7 @@
 using Xamarin.Forms;
 using ReadReceipt.Models;
 using ReadReceipt.Services;
+using System.Collections.Generic;
 
 namespace ReadReceipt.ViewModels
 {
@@ -9,40 +10,79 @@ namespace ReadReceipt.ViewModels
     {
         IReceiptStoreService _storeService = DependencyService.Get<IReceiptStoreService>();
 
-        public ItemsViewModel _itemsViewModel = null;
         public Receipt Receipt { get; set; }
-        private ReceiptGroup group = null;
-        public ItemDetailViewModel(Receipt item, ItemsViewModel itemsViewModel,INavigation nav=null) :base(nav)
+        public ReceiptGroup Group { get; set; }
+        public ItemDetailViewModel(Receipt item, ReceiptGroup group = null, INavigation nav = null) : base(nav)
         {
-            Title = item?.Header.Title;
             Receipt = item;
-            _itemsViewModel = itemsViewModel;
-            this.group = itemsViewModel.ReceiptGroup;
+            this.Group = group;
+            IsCamEditMode = group == null;
+            if(group == null)
+            {
+                Title = "Yeni Fiş Girişi";
+            }
+            else
+            {
+                Title = item?.Header.Title;
+            }
             SaveCommand = new Command(OnSave);
+        }
+
+        public async void OnAppearing()
+        {
+            if (IsCamEditMode)
+            {
+                ReceiptGroups = await _storeService.GetAllReceiptGroup();
+            }
+        }
+
+        private bool isCamEditMode = false;
+        public bool IsCamEditMode
+        {
+            get { return isCamEditMode; }
+            set
+            {
+                isCamEditMode = value;
+                OnPropertyChanged(nameof(IsCamEditMode));
+            }
+        }
+
+        private IEnumerable<ReceiptGroup> receiptGroups ;
+        public IEnumerable<ReceiptGroup> ReceiptGroups
+        {
+            get { return receiptGroups; }
+            set
+            {
+                receiptGroups = value;
+                OnPropertyChanged(nameof(ReceiptGroups));
+            }
         }
 
         public ICommand DeleteItemCommand => new Command(() =>
         {
-            _itemsViewModel?.ReceiptGroup.Receipts.Remove(Receipt);
+            this.Group?.Receipts.Remove(Receipt);
         });
 
         public ICommand SaveCommand { get; set; }
 
         public void OnSave()
         {
-            if (group != null)
+            if (Group != null)
             {
-                _storeService.SetReceiptGroup(group);
+                Group.Receipts.Add(Receipt);
+                _storeService.SetReceiptGroup(Group);
                 BackNavigate();
+                MessagingCenter.Send(this, "Updated");
             }
         }
 
         public void OnDisAppearing()
         {
-            if (group != null)
+            if (Group != null && IsCamEditMode == false)
             {
-                _storeService.RemoveReceiptGroup(group.GroupName);
-                _storeService.SetReceiptGroup(group);
+                _storeService.RemoveReceiptGroup(Group.GroupName);
+                _storeService.SetReceiptGroup(Group);
+                BackNavigate();
             }
         }
     }

@@ -6,6 +6,15 @@
   This sample removes the method: android.support.v4.content.CursorLoader.loadInBackground:
   <remove-node path="/api/package[@name='android.support.v4.content']/class[@name='CursorLoader']/method[@name='loadInBackground']" />
   -->
+  <remove-node path="/api/package[@name='org.opencv.calib3d']" />
+  <remove-node path="/api/package[@name='org.opencv.dnn']" />
+  <remove-node path="/api/package[@name='org.opencv.engine']" />
+  <remove-node path="/api/package[@name='org.opencv.features2d']" />
+  <remove-node path="/api/package[@name='org.opencv.video']" />
+  <remove-node path="/api/package[@name='org.opencv.videoio']" />
+  <remove-node path="/api/package[@name='org.opencv.ml']" />
+    <remove-node path="/api/package/interface[@name='CameraBridgeViewBase.CvCameraViewListener']" />
+  <!--
+  -->
   <attr path="/api/package[@name='org.opencv.android']/class[@name='CameraRenderer']/method[@name='setCameraPreviewSize']" name="visibility">protected</attr>
-
 </metadata>

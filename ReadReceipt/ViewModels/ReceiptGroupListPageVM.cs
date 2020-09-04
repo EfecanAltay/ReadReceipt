@@ -4,6 +4,7 @@ using System.Windows.Input;
 using System.Linq;
 using Xamarin.Forms;
 using ReadReceipt.Services;
+using System.Threading.Tasks;
 
 namespace ReadReceipt.ViewModels
 {
@@ -16,7 +17,7 @@ namespace ReadReceipt.ViewModels
         public ObservableCollection<ReceiptGroup> ReceiptGroupList
         {
             get { return receiptGroupList; }
-            set 
+            set
             {
                 receiptGroupList = value;
                 OnPropertyChanged(nameof(ReceiptGroupList));
@@ -61,14 +62,18 @@ namespace ReadReceipt.ViewModels
             if (firstAppearing)
             {
                 firstAppearing = false;
-                _storeService.GetAllReceiptGroup((receiptGroups) => {
-                    if(receiptGroups != null)
-                    {
-                        ReceiptGroupList = new ObservableCollection<ReceiptGroup>(receiptGroups);
-                    }
-                    IsEmptyList = ReceiptGroupList.Any() == false;
-                });
+                UpdateList();
             }
+        }
+
+        public async void UpdateList()
+        {
+            _ = Task.Run(async () =>
+              {
+                  var receiptGroups = await _storeService.GetAllReceiptGroup();
+                  ReceiptGroupList = new ObservableCollection<ReceiptGroup>(receiptGroups);
+                  IsEmptyList = ReceiptGroupList.Any() == false;
+              });
         }
 
         public ICommand CheckCheckedCommand { get; set; }
@@ -100,7 +105,7 @@ namespace ReadReceipt.ViewModels
         public void AllSetCheckToggle()
         {
             var items = ReceiptGroupList.Where(x => x.IsChecked == false);
-            if(items.Any())
+            if (items.Any())
             {
                 foreach (var receiptGroup in ReceiptGroupList)
                 {

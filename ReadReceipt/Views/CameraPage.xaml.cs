@@ -3,6 +3,7 @@ using Plugin.Media;
 using ReadReceipt.Dependencies;
 using ReadReceipt.Models;
 using ReadReceipt.Utility;
+using ReadReceipt.ViewModels;
 using SkiaSharp;
 using SkiaSharp.Views.Forms;
 using System;
@@ -483,7 +484,7 @@ namespace ReadReceipt.Views
                 var time = TimeSpan.Zero;
                 if (string.IsNullOrEmpty(s_date) == false && Regex.Match(s_date, @"/^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}$/i").Success)
                     date = DateTime.ParseExact(s_date, @"dd/MM/yyyy",
-    System.Globalization.CultureInfo.InvariantCulture);
+                System.Globalization.CultureInfo.InvariantCulture);
                 if (string.IsNullOrEmpty(s_time) == false)
                     time = TimeSpan.Parse(s_time);
                 var receiptNo = FindValue(textBlockList, new string[] { "fis no", "f1$ no", "fi$ no", "f1ş no", "f1s no" });
@@ -499,7 +500,8 @@ namespace ReadReceipt.Views
             }
 
             Receipt receipt = new Receipt(header, content);
-            MessagingCenter.Send(this, "AddItem", receipt);
+            Navigation.PushAsync(new ItemDetailPage(new ItemDetailViewModel(receipt, nav: Navigation)));
+            //MessagingCenter.Send(this, "AddItem", receipt);
         }
 
         public static byte[] ReadFully(Stream input)
@@ -510,7 +512,5 @@ namespace ReadReceipt.Views
                 return ms.ToArray();
             }
         }
-
-       
     }
 }

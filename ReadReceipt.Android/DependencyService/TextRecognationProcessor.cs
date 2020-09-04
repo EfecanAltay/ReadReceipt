@@ -13,7 +13,7 @@ namespace ReadReceipt.Droid.DependencyService
     class TextRecognationProcessor : Java.Lang.Object, IProcessor
     {
         public Action<IEnumerable<ImageTextBlock>> DetectedTextAction;
-        public JniManagedPeerStates JniManagedPeerState => throw new NotImplementedException();
+        public JniManagedPeerStates JniManagedPeerState =>  JniManagedPeerStates.None ;
 
         public void Disposed()
         {

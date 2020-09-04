@@ -13,18 +13,24 @@ namespace ReadReceipt.Views
     [DesignTimeVisible(false)]
     public partial class ItemDetailPage : ContentPage
     {
-        ItemDetailViewModel viewModel;
+        ItemDetailViewModel bindingContext;
 
         public ItemDetailPage(ItemDetailViewModel viewModel)
         {
             InitializeComponent();
-            BindingContext = this.viewModel = viewModel;
+            BindingContext = this.bindingContext = viewModel;
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            bindingContext.OnAppearing();
         }
 
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            viewModel.OnDisAppearing();
+            bindingContext.OnDisAppearing();
         }
 
         private void Editor_Focused(object sender, FocusEventArgs e)
@@ -37,7 +43,7 @@ namespace ReadReceipt.Views
             var result = await Application.Current.MainPage.DisplayAlert("Fatura Silinecektir.", "Devam etmek ister misiniz ?", "Evet", "Hayır");
             if (result)
             {
-                viewModel.DeleteItemCommand.Execute(null);
+                bindingContext.DeleteItemCommand.Execute(null);
                 Navigation.PopAsync();
             }
         }
@@ -162,6 +168,11 @@ namespace ReadReceipt.Views
                 default:
                     break;
             }
+        }
+
+        private void Picker_SelectedIndexChanged(object sender, System.EventArgs e)
+        {
+            bindingContext.Group = (ReceiptGroup)ReceiptGroupPicker.SelectedItem;
         }
     }
 }

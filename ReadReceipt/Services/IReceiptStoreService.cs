@@ -1,12 +1,13 @@
 ﻿using ReadReceipt.Models;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ReadReceipt.Services
 {
     public interface IReceiptStoreService
     {
-        void GetAllReceiptGroup(Action<IEnumerable<ReceiptGroup>> success);
+        Task<IEnumerable<ReceiptGroup>> GetAllReceiptGroup();
         void GetReceiptGroup(string groupName, Action<ReceiptGroup> success);
         bool SetReceiptGroup(ReceiptGroup receiptGroup);
         bool RemoveReceiptGroup(string groupName);

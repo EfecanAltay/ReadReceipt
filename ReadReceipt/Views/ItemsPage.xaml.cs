@@ -17,20 +17,19 @@ namespace ReadReceipt.Views
         public ItemsPage(ReceiptGroup receiptGroup)
         {
             InitializeComponent();
-            BindingContext = bindingContext = new ItemsViewModel(receiptGroup,Navigation);
-            DependencyService.Get<IReceiptStoreService>().SetReceiptGroup(new ReceiptGroup());
+            BindingContext = bindingContext = new ItemsViewModel(receiptGroup, Navigation);
         }
 
         async void OnItemSelected(object sender, EventArgs args)
         {
             var layout = (BindableObject)sender;
             var item = (Receipt)layout.BindingContext;
-            await Navigation.PushAsync(new ItemDetailPage(new ItemDetailViewModel(item, bindingContext,Navigation)));
+            await Navigation.PushAsync(new ItemDetailPage(new ItemDetailViewModel(item, bindingContext.ReceiptGroup, Navigation)));
         }
 
         async void AddItem_Clicked(object sender, EventArgs e)
         {
-            string result = await DisplayPromptAsync("Fiş Adı", "Yeni Fiş Adını giriniz",placeholder:"Fiş Şirket Adı");
+            string result = await DisplayPromptAsync("Fiş Adı", "Yeni Fiş Adını giriniz", placeholder: "Fiş Şirket Adı");
             if (string.IsNullOrEmpty(result) == false)
                 bindingContext.AddItemCommand.Execute(result);
             else
@@ -52,7 +51,7 @@ namespace ReadReceipt.Views
 
         private async void EditGroupName_Tapped(object sender, EventArgs e)
         {
-            string result = await DisplayPromptAsync("Gurup Adı", "Yeni Gurup Adını giriniz",placeholder:"Yeni Gurup İsmi",initialValue: bindingContext.ReceiptGroup.GroupName);
+            string result = await DisplayPromptAsync("Gurup Adı", "Yeni Gurup Adını giriniz", placeholder: "Yeni Gurup İsmi", initialValue: bindingContext.ReceiptGroup.GroupName);
             if (string.IsNullOrEmpty(result) == false && bindingContext.ReceiptGroup.GroupName.Equals(result) == false)
                 bindingContext.ChangeGroupNameCommand.Execute(result);
             else

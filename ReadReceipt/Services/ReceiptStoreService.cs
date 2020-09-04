@@ -3,6 +3,8 @@ using ReadReceipt.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 [assembly: Dependency(typeof(ReceiptStoreService))]
@@ -17,9 +19,9 @@ namespace ReadReceipt.Services
             cachingService = DependencyService.Get<ICachingService>();
         }
 
-        public void GetAllReceiptGroup(Action<IEnumerable<ReceiptGroup>> success)
+        public async Task<IEnumerable<ReceiptGroup>> GetAllReceiptGroup()
         {
-            cachingService.GetAll<ReceiptGroup>().Subscribe(success);
+            return await cachingService.GetAll<ReceiptGroup>().Catch(Observable.Return(new List<ReceiptGroup>()));
         }
 
         public void GetReceiptGroup(string groupName,Action<ReceiptGroup> success)

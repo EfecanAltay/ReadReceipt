@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -326,15 +327,23 @@ namespace ReadReceipt.Models
             }
         }
 
+        [JsonIgnore]
         public ICommand CalculateResultCommand { get; set; }
+        [JsonIgnore]
         public ICommand SumResultCommand { get; set; }
+        [JsonIgnore]
         public ICommand MoveResultCommand { get; set; }
+        [JsonIgnore]
         public ICommand AddKDVCommand { get; set; }
+        [JsonIgnore]
         public ICommand RemoveKDV1Command { get; set; }
+        [JsonIgnore]
         public ICommand RemoveKDV8Command { get; set; }
+        [JsonIgnore]
         public ICommand RemoveKDV18Command { get; set; }
+        [JsonIgnore]
         public ICommand ResetResults { get; set; }
-
+        
         public ReceiptHeader()
         {
             CalculateResultCommand = new Command(OnCalculateResult);
@@ -495,7 +504,8 @@ namespace ReadReceipt.Models
             else
                 PairingItems = new ObservableCollection<PairingItem>();
         }
-
+        
+        [JsonIgnore]
         public ICommand RemoveItem => new Command(async (item) =>
         {
             var pItem = (PairingItem)item;
@@ -504,6 +514,7 @@ namespace ReadReceipt.Models
                 PairingItems.Remove(pItem);
         });
 
+        [JsonIgnore]
         public ICommand AddItem => new Command(() =>
         {
             PairingItems.Add(new PairingItem());

@@ -17,6 +17,10 @@ namespace ReadReceipt.Views
             InitializeComponent();
             BindingContext = bindingContext = new ReceiptGroupListPageVM(Navigation);
             bindingContext.PropertyChanged += BindingContext_PropertyChanged;
+            MessagingCenter.Subscribe<ItemDetailViewModel>(this, "Updated",(sender) =>
+            {
+                bindingContext.UpdateList();
+            });
         }
 
         private void BindingContext_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

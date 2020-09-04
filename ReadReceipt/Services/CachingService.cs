@@ -29,7 +29,16 @@ namespace ReadReceipt.Services
                 var cachePath = _filesystemProvider.GetDefaultLocalMachineCacheDirectory();
                 _filesystemProvider.CreateRecursive(cachePath).SubscribeOn(BlobCache.TaskpoolScheduler).Wait();
                 var path = Path.Combine(cachePath, "blobs.db");
-                var cache = new SQLitePersistentBlobCache(path, BlobCache.TaskpoolScheduler);
+                SQLitePersistentBlobCache cache;
+                try
+                {
+                    //Sometimes make Exception : https://github.com/reactiveui/Akavache/issues/195#issuecomment-66576874
+                    cache = new SQLitePersistentBlobCache(path, BlobCache.TaskpoolScheduler);
+                }
+                catch
+                {
+                    return localCache.Value;
+                }
                 return cache;
             });
         }

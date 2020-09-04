@@ -44,5 +44,10 @@ namespace ReadReceipt.Models
         {
             Receipts = new ObservableCollection<Receipt>();
         }
+
+        public override string ToString()
+        {
+            return GroupName;
+        }
     }
 }
