@@ -8,9 +8,11 @@
              x:Class="ReadReceipt.Views.CameraPage">
     <ContentPage.Content>
         <StackLayout BackgroundColor="Black" >
-            <forms:SKCanvasView x:Name="camCanvas" VerticalOptions="FillAndExpand"></forms:SKCanvasView>
-            <Button Text="Faturayı Çek" Clicked="Take_Receipt_Clicked" VerticalOptions="End"></Button>
-            <Button Text="Detayı Göster" VerticalOptions="End"></Button>
+            <Grid VerticalOptions="FillAndExpand">
+                <forms:SKCanvasView x:Name="camCanvas" VerticalOptions="FillAndExpand"></forms:SKCanvasView>
+                <ActivityIndicator x:Name="loadingBar" BackgroundColor="Transparent" HorizontalOptions="Center" VerticalOptions="Center"/>
+            </Grid>
+            <Button Text="Yeni Fiş Çek" Clicked="Take_Receipt_Clicked" VerticalOptions="End"></Button>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

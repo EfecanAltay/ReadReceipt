@@ -36,7 +36,7 @@ namespace ReadReceipt.Views
 
         Action ReadyToSave = null;
         Dictionary<ImageTextBlock, ImageTextBlock> pairingList = new Dictionary<ImageTextBlock, ImageTextBlock>();
-
+        private bool isImageDetected = false;
         public CameraPage()
         {
             InitializeComponent();
@@ -61,60 +61,63 @@ namespace ReadReceipt.Views
                 SKCanvas canvas = surface.Canvas;
                 canvas.Clear();
                 canvas.DrawImage(skCameraImage, new SKRect(0, 0, info.Width, info.Height));
-                var scaleRatioW = (float)info.Width / (float)skCameraImage.Width;
-                var scaleRatioH = (float)info.Height / (float)skCameraImage.Height;
-
-                #region Paint Palets
-                SKPaint paint = new SKPaint
+                if (isImageDetected)
                 {
-                    Style = SKPaintStyle.Stroke,
-                    Color = Color.Red.ToSKColor().WithAlpha(100),
-                    StrokeWidth = 2
-                };
+                    var scaleRatioW = (float)info.Width / (float)skCameraImage.Width;
+                    var scaleRatioH = (float)info.Height / (float)skCameraImage.Height;
 
-                SKPaint paint_blue = new SKPaint
-                {
-                    Style = SKPaintStyle.Stroke,
-                    Color = Color.Blue.ToSKColor(),
-                    StrokeWidth = 2
-                };
+                    #region Paint Palets
+                    SKPaint paint = new SKPaint
+                    {
+                        Style = SKPaintStyle.Stroke,
+                        Color = Color.Red.ToSKColor().WithAlpha(100),
+                        StrokeWidth = 2
+                    };
 
-                SKPaint paint_green = new SKPaint
-                {
-                    Style = SKPaintStyle.Stroke,
-                    Color = Color.Green.ToSKColor(),
-                    StrokeWidth = 4
-                };
+                    SKPaint paint_blue = new SKPaint
+                    {
+                        Style = SKPaintStyle.Stroke,
+                        Color = Color.Blue.ToSKColor(),
+                        StrokeWidth = 2
+                    };
 
-                SKPaint paint_yellow = new SKPaint
-                {
-                    Style = SKPaintStyle.Stroke,
-                    Color = Color.Yellow.ToSKColor(),
-                    StrokeWidth = 4
-                };
+                    SKPaint paint_green = new SKPaint
+                    {
+                        Style = SKPaintStyle.Stroke,
+                        Color = Color.Green.ToSKColor(),
+                        StrokeWidth = 4
+                    };
 
-                SKPaint paint_purple = new SKPaint
-                {
-                    Style = SKPaintStyle.Stroke,
-                    Color = Color.Purple.ToSKColor(),
-                    StrokeWidth = 4
-                };
-                #endregion
+                    SKPaint paint_yellow = new SKPaint
+                    {
+                        Style = SKPaintStyle.Stroke,
+                        Color = Color.Yellow.ToSKColor(),
+                        StrokeWidth = 4
+                    };
 
-                CalculateTextRects(scaleRatioW, scaleRatioH, canvas, paint);
+                    SKPaint paint_purple = new SKPaint
+                    {
+                        Style = SKPaintStyle.Stroke,
+                        Color = Color.Purple.ToSKColor(),
+                        StrokeWidth = 4
+                    };
+                    #endregion
 
-                canvas.DrawRect((float)ReceiptPaperBorder.X, (float)ReceiptPaperBorder.Y, (float)ReceiptPaperBorder.Width, (float)ReceiptPaperBorder.Height, paint_green);
+                    CalculateTextRects(scaleRatioW, scaleRatioH, canvas, paint);
 
-                ReadyToSave?.Invoke();
-                //##Draw Connections
-                pairingList.ForEach((k) =>
-                {
-                    var keyBorder = k.Key.Border;
-                    var valueBorder = k.Value.Border;
-                    canvas.DrawRect((float)keyBorder.X, (float)keyBorder.Y, (float)keyBorder.Width, (float)keyBorder.Height, paint_yellow);
-                    canvas.DrawRect((float)valueBorder.X, (float)valueBorder.Y, (float)valueBorder.Width, (float)valueBorder.Height, paint_yellow);
-                    canvas.DrawLine((float)keyBorder.Right, (float)keyBorder.Center.Y, (float)valueBorder.Left, (float)valueBorder.Center.Y, paint_green);
-                });
+                    canvas.DrawRect((float)ReceiptPaperBorder.X, (float)ReceiptPaperBorder.Y, (float)ReceiptPaperBorder.Width, (float)ReceiptPaperBorder.Height, paint_green);
+
+                    ReadyToSave?.Invoke();
+                    //##Draw Connections
+                    pairingList.ForEach((k) =>
+                    {
+                        var keyBorder = k.Key.Border;
+                        var valueBorder = k.Value.Border;
+                        canvas.DrawRect((float)keyBorder.X, (float)keyBorder.Y, (float)keyBorder.Width, (float)keyBorder.Height, paint_yellow);
+                        canvas.DrawRect((float)valueBorder.X, (float)valueBorder.Y, (float)valueBorder.Width, (float)valueBorder.Height, paint_yellow);
+                        canvas.DrawLine((float)keyBorder.Right, (float)keyBorder.Center.Y, (float)valueBorder.Left, (float)valueBorder.Center.Y, paint_green);
+                    });
+                }
             }
         }
 
@@ -420,19 +423,32 @@ namespace ReadReceipt.Views
                 {
                     return photo.GetStream();
                 });
-                skCameraImage = SKImage.FromEncodedData(ReadFully(photo.GetStream()));
+                byte[] data = ReadFully(photo.GetStream());
+                skCameraImage = SKImage.FromEncodedData(data);
+                isImageDetected = false;
+                loadingBar.IsRunning = true;
+                camCanvas.InvalidateSurface();
                 ReadyToSave = () =>
                 {
                     SaveImageTextBlocks(pairingList);
                     ReadyToSave = null;
                 };
-                Read_Receipt();
+
+                Task.Run(() =>
+                {
+                    Read_Receipt(data);
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        loadingBar.IsRunning = false;
+                        isImageDetected = true;
+                        camCanvas.InvalidateSurface();
+                    });
+                });
 #endif
-                camCanvas.InvalidateSurface();
             }
         }
 
-        private void Read_Receipt()
+        private void Read_Receipt(byte[] data)
         {
             StreamImageSource streamImageSource = (StreamImageSource)cameraImage.Source;
             if (streamImageSource != null)
@@ -440,13 +456,11 @@ namespace ReadReceipt.Views
                 System.Threading.CancellationToken cancellationToken = System.Threading.CancellationToken.None;
                 Task<Stream> task = streamImageSource.Stream(cancellationToken);
                 Stream stream = task.Result;
-                var data = ReadFully(stream);
+                //var data = ReadFully(stream);
                 _textRecognizer.Read(data, (texts) =>
                 {
                     textBlockList = texts;
                 });
-                //var ods = DependencyService.Get<IObjectDetection>();
-                //ods.DetectObject(data);
             }
         }
 
