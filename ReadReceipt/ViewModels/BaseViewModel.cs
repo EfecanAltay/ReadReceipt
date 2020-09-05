@@ -15,7 +15,7 @@ namespace ReadReceipt.ViewModels
         //public IDataStore<Receipt> DataStore => DependencyService.Get<IDataStore<Receipt>>();
         public ICachingService CachingService;
         INavigation navigation;
-
+        public bool _backNavigateActive = true; 
         public BaseViewModel(INavigation nav)
         {
             CachingService = DependencyService.Get<ICachingService>();
@@ -40,7 +40,11 @@ namespace ReadReceipt.ViewModels
 
         public void BackNavigate()
         {
-            navigation.PopAsync();
+            if (_backNavigateActive)
+            {
+                _backNavigateActive = false;
+                navigation.PopAsync();
+            }
         }
 
         protected bool SetProperty<T>(ref T backingStore, T value,

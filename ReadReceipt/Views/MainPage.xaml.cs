@@ -12,5 +12,10 @@ namespace ReadReceipt.Views
         {
             InitializeComponent();
         }
+
+        protected override void OnTabIndexPropertyChanged(int oldValue, int newValue)
+        {
+            base.OnTabIndexPropertyChanged(oldValue, newValue);
+        }
     }
 }

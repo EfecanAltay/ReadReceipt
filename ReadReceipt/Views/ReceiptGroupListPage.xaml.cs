@@ -70,13 +70,9 @@ namespace ReadReceipt.Views
 
         private async void ToolbarItem_Clicked(object sender, System.EventArgs e)
         {
-            string result = await DisplayPromptAsync("Gurup Adı", "Yeni Gurup Adını giriniz");
+            string result = await DisplayPromptAsync("Gurup Adı", "Yeni Gurup Adını giriniz",placeholder:"Gurup Adı");
             if (string.IsNullOrEmpty(result) == false)
                 bindingContext.AddItemCommand.Execute(result);
-            else
-            {
-                await DisplayAlert("Uyarı", "Bir Gurup ismi girmeden gurup oluşturamazsın!", "OK");
-            }
         }
 
         private void CheckBox_CheckedChanged(object sender, CheckedChangedEventArgs e)

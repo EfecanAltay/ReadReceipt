@@ -32,10 +32,6 @@ namespace ReadReceipt.Views
             string result = await DisplayPromptAsync("Fiş Adı", "Yeni Fiş Adını giriniz", placeholder: "Fiş Şirket Adı");
             if (string.IsNullOrEmpty(result) == false)
                 bindingContext.AddItemCommand.Execute(result);
-            else
-            {
-                await DisplayAlert("Uyarı", "Bir Fiş ismi girmeden fiş oluşturamazsın!", "OK");
-            }
         }
 
         protected override void OnAppearing()
@@ -51,12 +47,11 @@ namespace ReadReceipt.Views
 
         private async void EditGroupName_Tapped(object sender, EventArgs e)
         {
-            string result = await DisplayPromptAsync("Gurup Adı", "Yeni Gurup Adını giriniz", placeholder: "Yeni Gurup İsmi", initialValue: bindingContext.ReceiptGroup.GroupName);
-            if (string.IsNullOrEmpty(result) == false && bindingContext.ReceiptGroup.GroupName.Equals(result) == false)
-                bindingContext.ChangeGroupNameCommand.Execute(result);
-            else
+            string result = await DisplayPromptAsync("Gurup Adı Değiştir", "Yeni Gurup Adını Giriniz", placeholder: "Yeni Gurup Adı", initialValue: bindingContext.ReceiptGroup.GroupName);
+            if (string.IsNullOrEmpty(result) == false)
             {
-                await DisplayAlert("Uyarı", "Bir Gurup ismi girmeden gurup oluşturamazsın!", "OK");
+                if(bindingContext.ReceiptGroup.GroupName.Equals(result) == false)
+                    bindingContext.ChangeGroupNameCommand.Execute(result);
             }
         }
 

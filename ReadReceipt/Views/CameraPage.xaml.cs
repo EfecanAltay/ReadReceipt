@@ -46,6 +46,12 @@ namespace ReadReceipt.Views
             _textRecognizer.Init();
         }
 
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            MessagingCenter.Send(this, "OnAppearing");
+        }
+
         private void OnCanvasViewPaintSurface(object sender, SKPaintSurfaceEventArgs args)
         {
             if (skCameraImage != null)

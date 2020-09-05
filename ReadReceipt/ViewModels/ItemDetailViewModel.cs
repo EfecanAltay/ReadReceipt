@@ -3,6 +3,7 @@ using Xamarin.Forms;
 using ReadReceipt.Models;
 using ReadReceipt.Services;
 using System.Collections.Generic;
+using ReadReceipt.Views;
 
 namespace ReadReceipt.ViewModels
 {
@@ -82,7 +83,11 @@ namespace ReadReceipt.ViewModels
             {
                 _storeService.RemoveReceiptGroup(Group.GroupName);
                 _storeService.SetReceiptGroup(Group);
-                BackNavigate();
+                MessagingCenter.Unsubscribe<CameraPage>(this, "OnAppearing");
+                MessagingCenter.Subscribe<CameraPage>(this, "OnAppearing", (sender) =>
+                {
+                    BackNavigate();
+                });
             }
         }
     }
